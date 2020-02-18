@@ -1,34 +1,63 @@
 #!/bin/bash
+#all the comments in the file are for the line that follows the comment
+
+#check if the option given is -start
 if [ $1 == '-start' ]
+#true
 then
+#print for now that -start option was specified
 echo "Starting the command"
+
+#things to do
+
 #adk -start operations
 #start monitoring
 #connect to the network
 #advertise free resources (memory)
 
+#end the -start check if block
 fi
 
+#initialize the sentinel variables to 0
 val=0
 val1=0
+#for all the arguments passed to the command that are stored in $@
 for var in "$@"
+#start the loop
 do
+#check if the argument is -f which is the option for file
 if [ $var == "-f" ]
+#true
 then
+#set the sentinel variable to 1
 val=1
+#end the -f option if block
 fi
+#check if the argument is -d which is the option for dependency files
 if [ $var == "-d" ]
+#true
 then
+#set the sentinel variable to 1
 val1=1
+#end the -d option if block
 fi
+#if -f option is found and -d is not found and the argument is not -f then the argument is the file to be executed
 if [ $val == 1 -a $val1 == 0 -a $var != '-f' ]
+#true
 then
+#print for now that the file to be executed is foun
 echo "Program file is $var"
+#end the if block for checking the executable file
 fi
+#if -f option is found and -d option is found and the argument is not -d then all the remaining arguments are the dependency files for the executable file
 if [ $val == 1 -a $val1 == 1 -a $var != '-d' ]
+#true
 then
+#print for now all the dependency files
 echo "Dependency files are $var"
+#end the dependency files check if block
 fi
+#end the for loop
 done
 
 
