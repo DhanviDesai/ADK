@@ -1,0 +1,6 @@
+#!/bin/bash
+while [ $1 ] 
+do
+free= vmstat | sed -n '3p' | awk '{$4}'
+sleep 1
+done

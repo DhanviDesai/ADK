@@ -1,10 +1,14 @@
 #!/bin/bash
+#------------------------------------------
 #all the comments in the file are for the line that follows the comment
+#------------------------------------------
 
 #check if the option given is -start
 if [ $1 == '-start' ]
 #true
 then
+#sentinel for monitoring the resources
+sentinelStart=true
 #print for now that -start option was specified
 echo "Starting the command"
 
@@ -12,6 +16,9 @@ echo "Starting the command"
 
 #adk -start operations
 #start monitoring
+#start the process for monitoring
+free= ./forkProcess $sentinelStart &
+echo $free
 #connect to the network
 #advertise free resources (memory)
 
@@ -59,5 +66,14 @@ echo "Dependency files are $var"
 fi
 #end the for loop
 done
+
+if [ $1 == '-stop' ]
+then
+pid= ps | grep "forkProcess" | awk '{$1}'
+echo $sentinelStart
+echo "Command is still running"
+kill $pid
+sentinelStart=false
+fi
 
 
