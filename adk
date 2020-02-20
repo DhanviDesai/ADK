@@ -17,8 +17,7 @@ echo "Starting the command"
 #adk -start operations
 #start monitoring
 #start the process for monitoring
-free= ./forkProcess $sentinelStart &
-echo $free
+./forkProcess $sentinelStart &
 #connect to the network
 #advertise free resources (memory)
 
@@ -71,13 +70,8 @@ done
 if [ $1 == '-stop' ]
 #true
 then
-#get the process id of the forkProcess running
-pid= ps | grep "forkProcess" | awk '{$1}'
-echo $sentinelStart
-echo "Command is still running"
-#kill the background process
-kill $pid
-sentinelStart=false
+#kill the process 
+ ps | grep "forkProcess" | awk '{print $1}' | xargs kill
 fi
 
 

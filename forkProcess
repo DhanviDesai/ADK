@@ -1,6 +1,7 @@
 #!/bin/bash
 while [ $1 ] 
 do
-free= vmstat | sed -n '3p' | awk '{$4}'
+free=` vmstat | sed -n '3p' | awk '{print $4}' `
+cpuPower= ` lscpu | grep 'CPU max MHz' | awk '{print $4}'
 sleep 1
 done
