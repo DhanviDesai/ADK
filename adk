@@ -67,11 +67,15 @@ fi
 #end the for loop
 done
 
+#if condition to check for stop of the command
 if [ $1 == '-stop' ]
+#true
 then
+#get the process id of the forkProcess running
 pid= ps | grep "forkProcess" | awk '{$1}'
 echo $sentinelStart
 echo "Command is still running"
+#kill the background process
 kill $pid
 sentinelStart=false
 fi
