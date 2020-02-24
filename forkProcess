@@ -1,7 +1,11 @@
 #!/bin/bash
 while [ $1 ] 
 do
-free=` vmstat | sed -n '3p' | awk '{print $4}' `
-cpuPower= ` lscpu | grep 'CPU max MHz' | awk '{print $4}'
+
+free=` vmstat | sed -n '3p' | awk '{print $4}' >> testfile.txt `
+#echo 'free is $free' >> testfile.txt
+cpuPower= ` lscpu | grep 'CPU max MHz' | awk '{print $4}' >> testfile.txt`
+#echo 'cpu is $cpuPower' >> testfile.txt
 sleep 1
 done
+#info@ethnus.com
