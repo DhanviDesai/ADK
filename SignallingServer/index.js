@@ -39,13 +39,17 @@ var proctorRegistrationToken;
 
 app.post('/getToken',(req,res)=>{
   //console.log(req.body.token)
-  console.log(req.body.RegistrationToken);
+  console.log('A new peer accessed the server with '+req.body.RegistrationToken);
    sendMessage(req.body.RegistrationToken);
 });
 
 app.post('/sendToken',(req,res)=>{
   proctorOfferToken = req.body.OfferToken;
-  console.log(proctorOfferToken);
+  console.log('roctorOfferToken set');
+});
+
+app.get('/',(req,res)=>{
+  console.log("hi");
 });
 
 app.post('/connectProctor',(req,res)=>{
@@ -78,6 +82,7 @@ function sendMessage(registrationToken){
     },
     token: registrationToken
   };
+  console.log('Proctor registration token set');
   proctorRegistrationToken = registrationToken;
 }else{
   var message = {

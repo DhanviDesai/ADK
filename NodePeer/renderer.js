@@ -16,6 +16,8 @@ const wrtc = require('wrtc');
 
 var peer;
 
+var baseUrl = 'https://adk-signallingserver.herokuapp.com';
+
 
 
 // Listen for service successfully started
@@ -23,7 +25,9 @@ ipcRenderer.on(NOTIFICATION_SERVICE_STARTED, (_, token) => {
   console.log('service successfully started', token)
   console.log('The sent data is ','token = '+token);
 
-  $.post('http://192.168.1.9:3000/getToken',{RegistrationToken:''+token});
+  $.post(baseUrl+'/getToken',{RegistrationToken:''+token}).then((data)=>{
+    console.log('Done');
+  });
 
 })
 
@@ -40,13 +44,12 @@ ipcRenderer.on(TOKEN_UPDATED, (_, token) => {
 console.log('Sending token to backend');
 
 
-  $.post('http://192.168.1.9:3000/getToken',{token:''+token});
+  $.post(baseUrl+'/getToken',{token:''+token}).then((data)=>{
+    console.log('Done');
+  });
 
-// xhttp.open('POST','http://192.168.1.9:3000/getToken',true);
-// xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-// xhttp.send('token='+token);
 
-})
+});
 
 // Display notification
 ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
@@ -58,8 +61,14 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
     peer = new Peer({initiator:true,trickle:false,wrtc:wrtc});
 
     peer.on('signal',(data)=>{
-      $.post('http://192.168.1.9:3000/sendToken',{OfferToken:JSON.stringify(data)});
+      console.log('Generated the offer token. This node is the proctor node');
+      $.post(baseUrl+'/sendToken',{OfferToken:JSON.stringify(data)}).then((data)=>{
+        console.log('Done');
+      });
     });
+
+    console.log('There are no peers available');
+
   }else if(type == 'offer'){
     var offerToken = serverNotificationPayload.data.OfferToken;
     peer = new Peer({initiator:false,trickle:false,wrtc:wrtc});
@@ -69,7 +78,9 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
     peer.on('signal',(data)=>{
       console.log(JSON.stringify(data));
 
-      $.post('http://192.168.1.9:3000/connectProctor',{AnswerToken:JSON.stringify(data)});
+      $.post(baseUrl+'/connectProctor',{AnswerToken:JSON.stringify(data)}).then((data)=>{
+        console.log('Done');
+      });
 
     });
   }
@@ -89,22 +100,7 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
     });
 
   }
-  /*
-  if (serverNotificationPayload.notification.body){
-    // payload has a body, so show it to the user
-    console.log('display notification', serverNotificationPayload)
-    let myNotification = new Notification(serverNotificationPayload.notification.title, {
-      body: serverNotificationPayload.notification.body
-    })
 
-    myNotification.onclick = () => {
-      console.log('Notification clicked')
-    }
-  } else {
-    // payload has no body, so consider it silent (and just consider the data portion)
-    console.log('do something with the key/value pairs in the data', serverNotificationPayload.data)
-  }
-  */
 })
 
 // Start service
