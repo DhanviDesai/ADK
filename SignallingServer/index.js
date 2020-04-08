@@ -34,20 +34,61 @@ app.use(require('body-parser').urlencoded({
 //4)The server then sends the answer token to the incoming node and then the peer connection is established.
 
 
+var proctorOfferToken;
+var proctorRegistrationToken;
+
 app.post('/getToken',(req,res)=>{
   //console.log(req.body.token)
-  console.log(req.body.OfferToken);
-  sendMessage(req.body.RegistrationToken);
+  console.log(req.body.RegistrationToken);
+   sendMessage(req.body.RegistrationToken);
+});
+
+app.post('/sendToken',(req,res)=>{
+  proctorOfferToken = req.body.OfferToken;
+  console.log(proctorOfferToken);
+});
+
+app.post('/connectProctor',(req,res)=>{
+  var answerToken = req.body.AnswerToken;
+  console.log(answerToken);
+  var message = {
+    data:{
+      type : 'answer',
+      answerToken : answerToken
+    },
+    token:proctorRegistrationToken
+  }
+
+  admin.messaging().send(message)
+    .then((response) => {
+      // Response is a message ID string.
+      console.log('Successfully sent message:', response);
+    })
+    .catch((error) => {
+      console.log('Error sending message:', error);
+    });
+
 });
 
 function sendMessage(registrationToken){
+  if(proctorOfferToken == undefined ){
+    var message = {
+    data: {
+      type : 'Nine first'
+    },
+    token: registrationToken
+  };
+  proctorRegistrationToken = registrationToken;
+}else{
   var message = {
   data: {
-    score: '850',
-    time: '2:45'
+    type: 'offer',
+    OfferToken : proctorOfferToken
   },
   token: registrationToken
 };
+}
+
 admin.messaging().send(message)
   .then((response) => {
     // Response is a message ID string.

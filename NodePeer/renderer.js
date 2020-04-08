@@ -14,10 +14,7 @@ const {
 const Peer = require('simple-peer');
 const wrtc = require('wrtc');
 
-//var xhttp = new XMLHttpRequest();
-
-
-//Have to send the whole json object
+var peer;
 
 
 
@@ -26,19 +23,8 @@ ipcRenderer.on(NOTIFICATION_SERVICE_STARTED, (_, token) => {
   console.log('service successfully started', token)
   console.log('The sent data is ','token = '+token);
 
-  var peer = new Peer({initiator:true,trickle:false,wrtc:wrtc});
+  $.post('http://192.168.1.9:3000/getToken',{RegistrationToken:''+token});
 
-  peer.on('signal',(data)=>{
-
-console.log('Signal',JSON.stringify(data));
-      $.post('http://192.168.1.9:3000/getToken',{RegistrationToken:''+token,OfferToken:JSON.stringify(data)});
-
-  });
-
-
-  // xhttp.open('POST','http://192.168.1.9:3000/getToken',true);
-  // xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-  // xhttp.send('token='+token);
 })
 
 // Handle notification errors
@@ -66,6 +52,43 @@ console.log('Sending token to backend');
 ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
   // check to see if payload contains a body string, if it doesn't consider it a silent push
   console.log(serverNotificationPayload);
+  var type = serverNotificationPayload.data.type;
+  if( type == 'Nine first'){
+
+    peer = new Peer({initiator:true,trickle:false,wrtc:wrtc});
+
+    peer.on('signal',(data)=>{
+      $.post('http://192.168.1.9:3000/sendToken',{OfferToken:JSON.stringify(data)});
+    });
+  }else if(type == 'offer'){
+    var offerToken = serverNotificationPayload.data.OfferToken;
+    peer = new Peer({initiator:false,trickle:false,wrtc:wrtc});
+
+    peer.signal(offerToken);
+
+    peer.on('signal',(data)=>{
+      console.log(JSON.stringify(data));
+
+      $.post('http://192.168.1.9:3000/connectProctor',{AnswerToken:JSON.stringify(data)});
+
+    });
+  }
+  else if (type == 'answer'){
+
+    console.log(peer);
+    console.log('Here in connecting');
+    var answerToken = serverNotificationPayload.data.answerToken;
+    console.log(answerToken);
+
+
+    peer.signal(answerToken);
+
+
+    peer.on('connect',()=>{
+      console.log('Connected');
+    });
+
+  }
   /*
   if (serverNotificationPayload.notification.body){
     // payload has a body, so show it to the user
