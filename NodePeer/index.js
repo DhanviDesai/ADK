@@ -25,23 +25,7 @@ function createWindow () {
 
   // and load the index.html of the app.
   win.loadFile('index.html')
-  var peer = new Peer({initiator:true,wrtc:wrtc});
 
-  //Use sockets now to communicate
-
-peer.on('signal',data =>{
-  //This is where I get the signal data.
-  //Communicate with the signalling server here.
-
-console.log(data);
-})
-
-peer.on('connect',()=>{
-  peer.send('hi');
-});
-peer.on('data',data=>{
-  console.log('hi');
-});
 
 
 }

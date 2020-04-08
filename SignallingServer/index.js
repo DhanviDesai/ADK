@@ -2,10 +2,6 @@
 //This holds one of the proctor nodes at a given interval of time
 //The proctor nodes are changed based on the number of direct peers it has
 
-//This allows implementation with front end....
-//With the backend implementation written here as the server, the application will be the front end
-//with it being an electron app.
-
 
 //Trial using firebase to generate private notification push server
 
@@ -18,19 +14,11 @@ admin.initializeApp({
   databaseURL : "https://adk-server.firebaseio.com"
 });
 
-//const socket = require('socket.io');
-
 var port = process.env.PORT || 3000;
 
-//const webpush = require('web-push');
 const express = require('express');
 const http = require('http');
 
-//const vapidkeys = webpush.generateVAPIDKeys();
-
-//console.log(vapidkeys);
-
-//webpush.setVapidDetails('mailto:dhnvdesai@gmail.com',vapidkeys.publicKey,vapidkeys.privateKey);
 
 const app = express();
 
@@ -39,9 +27,17 @@ app.use(require('body-parser').urlencoded({
 }));
 
 
+//Server must hold two registrationTokens, one for the proctor node and one for the new incoming node
+//1)The client first checks whether it has a peer connected to it, else it sends the data to get connected
+//2)The incoming node sends the token as well as the offer key to the server on startup
+//3)Then the server sends the offer token to the proctor node to receive the answer token
+//4)The server then sends the answer token to the incoming node and then the peer connection is established.
+
+
 app.post('/getToken',(req,res)=>{
   //console.log(req.body.token)
-  sendMessage(req.body.token);
+  console.log(req.body.OfferToken);
+  sendMessage(req.body.RegistrationToken);
 });
 
 function sendMessage(registrationToken){
@@ -63,18 +59,6 @@ admin.messaging().send(message)
 
 }
 
-/*
-app.post('/subscribe',(req,res)=>{
-  const subscription = req.body;
-  res.status(201).json({});
-  const payload = JSON.stringify({title:'test'});
-  console.log(subscription);
-
-  webpush.sendNotification(subscription,payload).catch(error =>{
-    console.log(error.stack);
-  });
-});
-*/
 app.listen(port,() =>{
 console.log('Server up and running in port '+port);
 });

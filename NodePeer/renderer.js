@@ -11,14 +11,30 @@ const {
   TOKEN_UPDATED,
 } = require ('electron-push-receiver/src/constants')
 
-var xhttp = new XMLHttpRequest();
+const Peer = require('simple-peer');
+const wrtc = require('wrtc');
+
+//var xhttp = new XMLHttpRequest();
+
+
+//Have to send the whole json object
+
+
 
 // Listen for service successfully started
 ipcRenderer.on(NOTIFICATION_SERVICE_STARTED, (_, token) => {
   console.log('service successfully started', token)
   console.log('The sent data is ','token = '+token);
 
-  $.post('http://192.168.1.9:3000/getToken',{token:''+token});
+  var peer = new Peer({initiator:true,trickle:false,wrtc:wrtc});
+
+  peer.on('signal',(data)=>{
+
+console.log('Signal',JSON.stringify(data));
+      $.post('http://192.168.1.9:3000/getToken',{RegistrationToken:''+token,OfferToken:JSON.stringify(data)});
+
+  });
+
 
   // xhttp.open('POST','http://192.168.1.9:3000/getToken',true);
   // xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -37,9 +53,12 @@ ipcRenderer.on(TOKEN_UPDATED, (_, token) => {
 
 console.log('Sending token to backend');
 
-xhttp.open('POST','http://192.168.1.9:3000/getToken',true);
-xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-xhttp.send('token='+token);
+
+  $.post('http://192.168.1.9:3000/getToken',{token:''+token});
+
+// xhttp.open('POST','http://192.168.1.9:3000/getToken',true);
+// xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+// xhttp.send('token='+token);
 
 })
 
@@ -47,6 +66,7 @@ xhttp.send('token='+token);
 ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
   // check to see if payload contains a body string, if it doesn't consider it a silent push
   console.log(serverNotificationPayload);
+  /*
   if (serverNotificationPayload.notification.body){
     // payload has a body, so show it to the user
     console.log('display notification', serverNotificationPayload)
@@ -61,6 +81,7 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
     // payload has no body, so consider it silent (and just consider the data portion)
     console.log('do something with the key/value pairs in the data', serverNotificationPayload.data)
   }
+  */
 })
 
 // Start service
