@@ -2,20 +2,26 @@ const { app, BrowserWindow } = require('electron')
 var Peer = require('simple-peer');
 var wrtc = require('wrtc');
 
+const { setup: setupPushReceiver } = require('electron-push-receiver');
+
 
 //Bootstrap nodes should be set up
 //Signal handling between the peers should be handled
 
+let win
+
 function createWindow () {
   // Create the browser window.
-  let win = new BrowserWindow({
+  win = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
       nodeIntegration: true,
       nodeIntegrationInWorker:false
     }
-  })
+  });
+
+  setupPushReceiver(win.webContents);
 
   // and load the index.html of the app.
   win.loadFile('index.html')
