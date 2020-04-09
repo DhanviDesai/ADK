@@ -22,9 +22,12 @@ const http = require('http');
 
 const app = express();
 
+
 app.use(require('body-parser').urlencoded({
   extended:true
 }));
+
+app.use(express.static('public'));
 
 
 //Server must hold two registrationTokens, one for the proctor node and one for the new incoming node
@@ -50,6 +53,7 @@ app.post('/sendToken',(req,res)=>{
 
 app.get('/',(req,res)=>{
   console.log("hi");
+
 });
 
 app.post('/connectProctor',(req,res)=>{

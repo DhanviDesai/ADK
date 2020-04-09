@@ -69,7 +69,10 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
 
     console.log('There are no peers available');
 
-  }else if(type == 'offer'){
+    //The peer object here is the initiator.
+
+  }
+  else if(type == 'offer'){
     var offerToken = serverNotificationPayload.data.OfferToken;
     peer = new Peer({initiator:false,trickle:false,wrtc:wrtc});
 
@@ -83,8 +86,18 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
       });
 
     });
+
+    //Here peer is the answer node
+
+    peer.on('connect',(data)=>{
+      console.log('Connected to a proctor node');
+    });
+
+    //Any data sent by the proctor will be available here by using the peer callbacks
   }
   else if (type == 'answer'){
+
+    //Here is the peer callbacks to connect to the peer answer node.
 
     console.log(peer);
     console.log('Here in connecting');
@@ -96,6 +109,9 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
 
 
     peer.on('connect',()=>{
+      //An answer node is connected to the initiator node that is hosted by this instance.
+      //Once the peer is connected , add it to the list of connected peers.
+      //If the node is proctor then if the size of the list is 6, then traverse through the list to find the next proctor.
       console.log('Connected');
     });
 
