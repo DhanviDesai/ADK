@@ -37,13 +37,20 @@ app.use(express.static('public'));
 //4)The server then sends the answer token to the incoming node and then the peer connection is established.
 
 
+//If the proctor is an offerType peer
 var proctorOfferToken;
+
+//If the proctor is an ansertType peer
+var proctorAnswerToken;
+
+
 var proctorRegistrationToken;
 
 app.post('/getToken',(req,res)=>{
   //console.log(req.body.token)
   console.log('A new peer accessed the server with '+req.body.RegistrationToken);
-   sendMessage(req.body.RegistrationToken);
+  console.log('Name of the sender is '+req.body.Name);
+   sendMessage(req.body.Name,req.body.RegistrationToken);
 });
 
 app.post('/sendToken',(req,res)=>{
@@ -78,11 +85,12 @@ app.post('/connectProctor',(req,res)=>{
 
 });
 
-function sendMessage(registrationToken){
+function sendMessage(name,registrationToken){
   if(proctorOfferToken == undefined ){
     var message = {
     data: {
-      type : 'Nine first'
+      type : 'Nine first',
+      Name : name
     },
     token: registrationToken
   };
@@ -92,7 +100,9 @@ function sendMessage(registrationToken){
   var message = {
   data: {
     type: 'offer',
-    OfferToken : proctorOfferToken
+    Name : name,
+    OfferToken : proctorOfferToken,
+    peerRegistrationToken:registrationToken
   },
   token: registrationToken
 };

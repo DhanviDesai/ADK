@@ -18,16 +18,32 @@ var peer;
 
 var baseUrl = 'https://adk-signallingserver.herokuapp.com';
 
+var registrationToken;
+
+$('#nameSubmit').on('click',function(e){
+  var name = $('#name').val();
+  $.post(baseUrl+'/getToken',{
+    RegistrationToken:''+registrationToken,
+    Name: name
+}).then((data)=>{
+      console.log('Done');
+    });
+})
+
 
 
 // Listen for service successfully started
 ipcRenderer.on(NOTIFICATION_SERVICE_STARTED, (_, token) => {
   console.log('service successfully started', token)
-  console.log('The sent data is ','token = '+token);
+  //console.log('The sent data is ','token = '+token);
 
-  $.post(baseUrl+'/getToken',{RegistrationToken:''+token}).then((data)=>{
-    console.log('Done');
-  });
+
+  registrationToken = token;
+
+  $('#nameSubmit').prop('disabled',false);
+  $('#name').prop('disabled',false);
+
+
 
 })
 
