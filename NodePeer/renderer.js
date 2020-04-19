@@ -26,14 +26,19 @@ var offerToken;
 //answerType peer
 var answerToken;
 
+var peerName;
+
 $('#nameSubmit').on('click',function(e){
-  var name = $('#name').val();
+  peerName = $('#name').val();
   $.post(baseUrl+'/getToken',{
     RegistrationToken:''+registrationToken,
-    Name: name
+    Name: peerName
 }).then((data)=>{
       console.log('Done');
     });
+    $('#firstWelcome').css('display','none');
+    $('#secondaryPage').css('display','block');
+    $('#backgroundVideo').css('display','none');
 })
 
 
@@ -144,7 +149,7 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
       console.log(JSON.stringify(data));
 
       //Send the generated answerToken to the server to connect with the peer
-      $.post(baseUrl+'/connectProctor',{AnswerToken:JSON.stringify(data)}).then((data)=>{
+      $.post(baseUrl+'/connectProctor',{AnswerToken:JSON.stringify(data),Name:peerName}).then((data)=>{
         console.log('Done');
       });
 
@@ -159,6 +164,8 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
     });
 
     peer.on('data',(data)=>{
+      var incomingMessage = "<li id='incomingMessage'><div>"+data+"</div></li>";
+      $('#actualMessages').append(incomingMessage);
       console.log(name +' sent '+ data);
     });
 
@@ -195,6 +202,8 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
     });
 
     peer.on('data',(data)=>{
+      var incomingMessage = "<li id='incomingMessage'><div>"+data+"</div></li>";
+      $('#actualMessages').append(incomingMessage);
       console.log(name+' sent '+data);
     });
 
@@ -214,6 +223,8 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
 $('#send').on('click',function(e){
   var message = $('#message').val();
   console.log(message);
+  var sentMess = "<li id='sentMessage'><div>"+message+"</div></li>";
+  $('#actualMessages').append(sentMess);
   peer.send(message);
 });
 

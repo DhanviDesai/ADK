@@ -47,7 +47,7 @@ var proctorAnswerToken;
 var proctorRegistrationToken;
 
 //Peer Name
-var name;
+var proctorName;
 
 app.post('/getToken',(req,res)=>{
   //console.log(req.body.token)
@@ -59,7 +59,7 @@ app.post('/getToken',(req,res)=>{
 
 app.post('/sendToken',(req,res)=>{
   proctorOfferToken = req.body.OfferToken;
-  console.log('roctorOfferToken set');
+  console.log('proctorOfferToken set');
 });
 
 app.get('/',(req,res)=>{
@@ -69,11 +69,12 @@ app.get('/',(req,res)=>{
 
 app.post('/connectProctor',(req,res)=>{
   var answerToken = req.body.AnswerToken;
+  var answerNodeName = req.body.Name;
   console.log(answerToken);
   var message = {
     data:{
       type : 'answer',
-      Name: name,
+      Name : answerNodeName,
       answerToken : answerToken
     },
     token:proctorRegistrationToken
@@ -94,18 +95,18 @@ function sendMessage(name,registrationToken){
   if(proctorOfferToken == undefined ){
     var message = {
     data: {
-      type : 'Nine first',
-      Name : name
+      type : 'Nine first'
     },
     token: registrationToken
   };
-  console.log('Proctor registration token set');
+  console.log('Proctor registration token and proctor name set');
   proctorRegistrationToken = registrationToken;
+  proctorName = name;
 }else{
   var message = {
   data: {
     type: 'offer',
-    Name : name,
+    Name : proctorName,
     OfferToken : proctorOfferToken,
     peerRegistrationToken:registrationToken
   },

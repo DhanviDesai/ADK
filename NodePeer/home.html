@@ -2,18 +2,33 @@
 <head>
   <title>ADK</title>
   <link rel="stylesheet" href="index.css" type="text/css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Roboto:wght@100&display=swap" rel="stylesheet">
   <script src="jquery.min.js"></script>
 </head>
 <body>
+<!--    <video autoplay muted loop id="backgroundVideo">
+        <source src="Evening.mp4" type="video/mp4">
+    </video>
+    <div id="firstWelcome">
+      <img id="firstImage" src="ADK.png" >
+    <input id="name" type="text" name="name" placeholder="Enter your name" />
+    <br>
+    <button id="nameSubmit" >Submit</button>
+  </div>-->
+  <div id="secondaryPage">
   <div id="background"></div>
   <div id="backgroundColor"></div>
   <div id="OnTop">
-    <input id="name" type="text" name="name" placeholder="Enter your name" />
-    <button id="nameSubmit" >Submit</button>
-    <br>
+    <div id="messagesPlace">
+      <ul id="actualMessages">
+        <li id="incomingMessage"><div>Incoming message</div></li>
+        <li id="sentMessage"><div>Sent Message</div></li>
+      </ul>
+    </div>
     <input id="message" type="text" name="message" placeholder="Enter your message" />
     <button id="send" >Send</button>
   </div>
+</div>
   <script src="client.js"></script>
 </body>
 </html>
