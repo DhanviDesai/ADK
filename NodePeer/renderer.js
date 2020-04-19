@@ -77,13 +77,22 @@ console.log('Sending token to backend');
 ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
   // check to see if payload contains a body string, if it doesn't consider it a silent push
   console.log(serverNotificationPayload);
+
+  //Get the type of data received from the server
   var type = serverNotificationPayload.data.type;
+
+  //If the type is Nine first then there are no proctor nodes present and this peer has to take up that role
   if( type == 'Nine first'){
 
+
+    //Since this peer has to be the proctor node, in this case it will be the offerType node
     peer = new Peer({initiator:true,trickle:false,wrtc:wrtc});
 
+    //This is the callback for when the offerToken from the peer is generated
     peer.on('signal',(data)=>{
       console.log('Generated the offer token. This node is the proctor node');
+
+      //Send the offerToken to the server
       $.post(baseUrl+'/sendToken',{OfferToken:JSON.stringify(data)}).then((data)=>{
         console.log('Done');
       });
@@ -94,29 +103,45 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
     //The peer object here is the initiator.
 
   }
+
+  //If the received data from the server is of the type offer, there is a proctor node present and its offerToken was sent
   else if(type == 'offer'){
+      //Here peer is the answer node
+
+    //Get the proctor node's offetToken
     var offerToken = serverNotificationPayload.data.OfferToken;
+
+    //Generate a peer object, here the peer will be of answerType
     peer = new Peer({initiator:false,trickle:false,wrtc:wrtc});
 
+    //Generate an answerToken for the proctor node's offerToken
     peer.signal(offerToken);
 
+    //Called when the answerToken is generated
     peer.on('signal',(data)=>{
       console.log(JSON.stringify(data));
 
+      //Send the generated answerToken to the server to connect with the peer
       $.post(baseUrl+'/connectProctor',{AnswerToken:JSON.stringify(data)}).then((data)=>{
         console.log('Done');
       });
 
     });
 
-    //Here peer is the answer node
 
+    //Called when the answerNode is connected to the proctor node
     peer.on('connect',(data)=>{
       console.log('Connected to a proctor node');
     });
 
     //Any data sent by the proctor will be available here by using the peer callbacks
+
+    //Data can be sent to the proctor node using peer.send() method
+    //Data can be received using the peer.on('data',(data)) callback
   }
+
+  //This is the case when this node is the proctor node and an answerType node trying to connect to
+  //this node has sent it's answerToken to the server and it is received here from the server
   else if (type == 'answer'){
 
     //Here is the peer callbacks to connect to the peer answer node.
@@ -127,6 +152,7 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
     console.log(answerToken);
 
 
+    //This sparks the connection between the two nodes
     peer.signal(answerToken);
 
 
@@ -140,6 +166,15 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
   }
 
 })
+
+//This is the case because an answerToken can only be generated using an offerToken hence an answerToken
+//that was created by an offer from another peer cannot be used to connect the two peers.
+
+
+
+//Also have to take care of when an answerType node becomes a proctor,i.e prompted by the previous
+//proctor to become the proctor. A new peer object has to be created making this answerType node
+//an offerType node and sending the offerToken to the server.
 
 // Start service
 const senderId = '159515945544' // <-- replace with FCM sender ID from FCM web admin under Settings->Cloud Messaging
