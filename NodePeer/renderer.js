@@ -86,7 +86,17 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
 
 
     //Since this peer has to be the proctor node, in this case it will be the offerType node
-    peer = new Peer({initiator:true,trickle:false,wrtc:wrtc});
+    peer = new Peer({
+      initiator:true,
+      trickle:false,
+      wrtc:wrtc,
+      config: {
+        iceServers: [
+          { urls: 'stun:stun.l.google.com:19302' },
+          { urls: 'stun:global.stun.twilio.com:3478?transport=udp' }
+        ]
+      }
+    });
 
     //This is the callback for when the offerToken from the peer is generated
     peer.on('signal',(data)=>{
@@ -112,7 +122,17 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
     var offerToken = serverNotificationPayload.data.OfferToken;
 
     //Generate a peer object, here the peer will be of answerType
-    peer = new Peer({initiator:false,trickle:false,wrtc:wrtc});
+    peer = new Peer({
+      initiator:false,
+      trickle:false,
+      wrtc:wrtc,
+      config: {
+        iceServers: [
+          { urls: 'stun:stun.l.google.com:19302' },
+          { urls: 'stun:global.stun.twilio.com:3478?transport=udp' }
+        ]
+      }
+    });
 
     //Generate an answerToken for the proctor node's offerToken
     peer.signal(offerToken);
@@ -132,6 +152,8 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
     //Called when the answerNode is connected to the proctor node
     peer.on('connect',(data)=>{
       console.log('Connected to a proctor node');
+      $('#message').prop('disabled',false);
+      $('#send').prop('disabled',false);
     });
 
     //Any data sent by the proctor will be available here by using the peer callbacks
@@ -175,6 +197,11 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
 //Take care of when an answerType node becomes a proctor,i.e prompted by the previous
 //proctor to become the proctor. A new peer object has to be created making this answerType node
 //an offerType node and sending the offerToken to the server.
+
+$('#send').on('click',function(e){
+  var message = $('#message').val();
+  console.log(message);
+});
 
 // Start service
 const senderId = '159515945544' // <-- replace with FCM sender ID from FCM web admin under Settings->Cloud Messaging
