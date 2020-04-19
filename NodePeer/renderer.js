@@ -121,6 +121,8 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
     //Get the proctor node's offetToken
     var offerToken = serverNotificationPayload.data.OfferToken;
 
+    var name = serverNotificationPayload.data.Name;
+
     //Generate a peer object, here the peer will be of answerType
     peer = new Peer({
       initiator:false,
@@ -156,6 +158,10 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
       $('#send').prop('disabled',false);
     });
 
+    peer.on('data',(data)=>{
+      console.log(name +' sent '+ data);
+    });
+
     //Any data sent by the proctor will be available here by using the peer callbacks
 
     //Data can be sent to the proctor node using peer.send() method
@@ -171,6 +177,7 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
     console.log(peer);
     console.log('Here in connecting');
     var answerToken = serverNotificationPayload.data.answerToken;
+    var name = serverNotificationPayload.data.Name;
     console.log(answerToken);
 
 
@@ -183,6 +190,12 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
       //Once the peer is connected , add it to the list of connected peers.
       //If the node is proctor then if the size of the list is 6, then traverse through the list to find the next proctor.
       console.log('Connected');
+      $('#message').prop('disabled',false);
+      $('#send').prop('disabled',false);
+    });
+
+    peer.on('data',(data)=>{
+      console.log(name+' sent '+data);
     });
 
   }
@@ -201,6 +214,7 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
 $('#send').on('click',function(e){
   var message = $('#message').val();
   console.log(message);
+  peer.send(message);
 });
 
 // Start service

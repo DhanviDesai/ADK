@@ -46,10 +46,14 @@ var proctorAnswerToken;
 
 var proctorRegistrationToken;
 
+//Peer Name
+var name;
+
 app.post('/getToken',(req,res)=>{
   //console.log(req.body.token)
   console.log('A new peer accessed the server with '+req.body.RegistrationToken);
   console.log('Name of the sender is '+req.body.Name);
+  name = req.body.Name;
    sendMessage(req.body.Name,req.body.RegistrationToken);
 });
 
@@ -69,6 +73,7 @@ app.post('/connectProctor',(req,res)=>{
   var message = {
     data:{
       type : 'answer',
+      Name: name,
       answerToken : answerToken
     },
     token:proctorRegistrationToken
