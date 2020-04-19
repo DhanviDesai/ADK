@@ -20,6 +20,12 @@ var baseUrl = 'https://adk-signallingserver.herokuapp.com';
 
 var registrationToken;
 
+//offerType peer
+var offerToken;
+
+//answerType peer
+var answerToken;
+
 $('#nameSubmit').on('click',function(e){
   var name = $('#name').val();
   $.post(baseUrl+'/getToken',{
