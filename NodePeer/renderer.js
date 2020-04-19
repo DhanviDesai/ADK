@@ -171,8 +171,8 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
 //that was created by an offer from another peer cannot be used to connect the two peers.
 
 
-
-//Also have to take care of when an answerType node becomes a proctor,i.e prompted by the previous
+// TODO:
+//Take care of when an answerType node becomes a proctor,i.e prompted by the previous
 //proctor to become the proctor. A new peer object has to be created making this answerType node
 //an offerType node and sending the offerToken to the server.
 
