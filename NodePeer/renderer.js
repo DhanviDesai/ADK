@@ -55,7 +55,8 @@ function makePeerObject(initiator){
         { urls: 'stun:global.stun.twilio.com:3478?transport=udp' }
       ]
     }
-  });
+  })
+  return peer;
 }
 
 
@@ -88,8 +89,8 @@ ipcRenderer.on(TOKEN_UPDATED, (_, token) => {
 console.log('Sending token to backend');
 
 
-  $.post(baseUrl+'/getToken',{token:''+token}).then((data)=>{
-    console.log('Done');
+  $.post(baseUrl+'/getToken',{
+    token:token
   });
 
 
@@ -130,12 +131,11 @@ function answerTypeHandler(offerToken){
     $.post(baseUrl+'/connectProctor',{
       AnswerToken:JSON.stringify(data),
       Name:peerName
-    }).then((data)=>{
-      console.log('Done');
     });
-
-
+  });
 }
+
+
 
 // Display notification
 ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
@@ -157,7 +157,8 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
 
   }
 
-  //If the received data from the server is of the type offer, there is a proctor node present and its offerToken was sent
+  //If the received data from the server is of the type offer, there is a proctor
+  //node present and its offerToken was sent
   else if(type == 'offer'){
       //Here peer is the answer node
 

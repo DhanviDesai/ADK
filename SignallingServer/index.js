@@ -86,7 +86,7 @@ app.post('/getToken',(req,res)=>{
 
   //When the offerToken that is available is not valid cause some other peer
   //generated an answer token for this
-  else if (!isProctorTokenValid or addToList){
+  else if (!isProctorTokenValid || addToList){
     var data = {
       RegistrationToken:req.body.RegistrationToken,
       Name:req.body.Name
