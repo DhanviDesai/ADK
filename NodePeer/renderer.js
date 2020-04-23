@@ -28,6 +28,9 @@ var answerToken;
 
 var peerName;
 
+//Array to keep track of all the connected nodes
+var connectedPeers = [];
+
 $('#nameSubmit').on('click',function(e){
   peerName = $('#name').val();
   $.post(baseUrl+'/getToken',{
@@ -39,7 +42,21 @@ $('#nameSubmit').on('click',function(e){
     $('#firstWelcome').css('display','none');
     $('#secondaryPage').css('display','block');
     $('#backgroundVideo').css('display','none');
-})
+});
+
+function makePeerObject(initiator){
+  var peer = new Peer({
+    initiator:initiator,
+    trickle:false,
+    wrtc:wrtc,
+    config: {
+      iceServers: [
+        { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:global.stun.twilio.com:3478?transport=udp' }
+      ]
+    }
+  });
+}
 
 
 
@@ -78,6 +95,48 @@ console.log('Sending token to backend');
 
 });
 
+//This function handles the flow and working of offerType peer
+function offerTypeHandler(){
+
+  //Make a new peer object with initiator type to generate offerToken
+  peer = makePeerObject(true);
+
+  //This is the callback for when the offerToken from the peer is generated
+  peer.on('signal',(data)=>{
+    console.log('Generated a new offer token.');
+
+    //Send the offerToken to the server
+    $.post(baseUrl+'/setToken',{
+      OfferToken:JSON.stringify(data)
+    }).then((data)=>{
+      console.log('Done');
+    });
+  });
+}
+
+//This function handles the flow and working of answerType peer
+function answerTypeHandler(offerToken){
+  //Generate a peer object, here the peer will be of answerType
+  peer = makePeerObject(false);
+
+  //Generate an answerToken for the proctor node's offerToken
+  peer.signal(offerToken);
+
+  //Called when the answerToken is generated
+  peer.on('signal',(data)=>{
+    console.log('OfferToken generated');
+
+    //Send the generated answerToken to the server to connect with the peer
+    $.post(baseUrl+'/connectProctor',{
+      AnswerToken:JSON.stringify(data),
+      Name:peerName
+    }).then((data)=>{
+      console.log('Done');
+    });
+
+
+}
+
 // Display notification
 ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
   // check to see if payload contains a body string, if it doesn't consider it a silent push
@@ -89,29 +148,8 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
   //If the type is Nine first then there are no proctor nodes present and this peer has to take up that role
   if( type == 'Nine first'){
 
-
-    //Since this peer has to be the proctor node, in this case it will be the offerType node
-    peer = new Peer({
-      initiator:true,
-      trickle:false,
-      wrtc:wrtc,
-      config: {
-        iceServers: [
-          { urls: 'stun:stun.l.google.com:19302' },
-          { urls: 'stun:global.stun.twilio.com:3478?transport=udp' }
-        ]
-      }
-    });
-
-    //This is the callback for when the offerToken from the peer is generated
-    peer.on('signal',(data)=>{
-      console.log('Generated the offer token. This node is the proctor node');
-
-      //Send the offerToken to the server
-      $.post(baseUrl+'/sendToken',{OfferToken:JSON.stringify(data)}).then((data)=>{
-        console.log('Done');
-      });
-    });
+    //Call the function to generate and post the new offerToken
+    offerTypeHandler();
 
     console.log('There are no peers available');
 
@@ -123,38 +161,12 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
   else if(type == 'offer'){
       //Here peer is the answer node
 
-    //Get the proctor node's offetToken
+    //Get the proctor node's offerToken
     var offerToken = serverNotificationPayload.data.OfferToken;
 
     var name = serverNotificationPayload.data.Name;
 
-    //Generate a peer object, here the peer will be of answerType
-    peer = new Peer({
-      initiator:false,
-      trickle:false,
-      wrtc:wrtc,
-      config: {
-        iceServers: [
-          { urls: 'stun:stun.l.google.com:19302' },
-          { urls: 'stun:global.stun.twilio.com:3478?transport=udp' }
-        ]
-      }
-    });
-
-    //Generate an answerToken for the proctor node's offerToken
-    peer.signal(offerToken);
-
-    //Called when the answerToken is generated
-    peer.on('signal',(data)=>{
-      console.log(JSON.stringify(data));
-
-      //Send the generated answerToken to the server to connect with the peer
-      $.post(baseUrl+'/connectProctor',{AnswerToken:JSON.stringify(data),Name:peerName}).then((data)=>{
-        console.log('Done');
-      });
-
-    });
-
+    answerTypeHandler(offerToken);
 
     //Called when the answerNode is connected to the proctor node
     peer.on('connect',(data)=>{
@@ -169,10 +181,12 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
       console.log(name +' sent '+ data);
     });
 
-    //Any data sent by the proctor will be available here by using the peer callbacks
 
-    //Data can be sent to the proctor node using peer.send() method
-    //Data can be received using the peer.on('data',(data)) callback
+        //Any data sent by the proctor will be available here by using the peer callbacks
+
+        //Data can be sent to the proctor node using peer.send() method
+        //Data can be received using the peer.on('data',(data)) callback
+
   }
 
   //This is the case when this node is the proctor node and an answerType node trying to connect to
@@ -180,12 +194,10 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
   else if (type == 'answer'){
 
     //Here is the peer callbacks to connect to the peer answer node.
-
-    console.log(peer);
     console.log('Here in connecting');
     var answerToken = serverNotificationPayload.data.answerToken;
     var name = serverNotificationPayload.data.Name;
-    console.log(answerToken);
+    console.log('answerToken generated');
 
 
     //This sparks the connection between the two nodes
@@ -199,6 +211,10 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
       console.log('Connected');
       $('#message').prop('disabled',false);
       $('#send').prop('disabled',false);
+
+      //The peer is connected hence add it to the list to later access it
+      connectedPeers.push(peer);
+
     });
 
     peer.on('data',(data)=>{
@@ -206,6 +222,12 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
       $('#actualMessages').append(incomingMessage);
       console.log(name+' sent '+data);
     });
+
+  }
+
+  else if(type == 'OfferToken exhausted'){
+
+    offerTypeHandler();
 
   }
 

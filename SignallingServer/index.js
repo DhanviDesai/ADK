@@ -40,6 +40,8 @@ app.use(express.static('public'));
 //If the proctor is an offerType peer
 var proctorOfferToken;
 
+var isProctorTokenValid = false;
+
 //If the proctor is an ansertType peer
 var proctorAnswerToken;
 
@@ -49,70 +51,146 @@ var proctorRegistrationToken;
 //Peer Name
 var proctorName;
 
+
+//Incoming peer registrationToken queue
+
+//Incoming peers list
+var incomingPeers = [];
+//Index variable for removing peers from queue
+var front = 0;
+
+//This points to the waiting and validity of the current offerToken
+var addToList = false;
+
+
+//This is the endpoint for getting proctor details and other information
 app.post('/getToken',(req,res)=>{
-  //console.log(req.body.token)
   console.log('A new peer accessed the server with '+req.body.RegistrationToken);
   console.log('Name of the sender is '+req.body.Name);
-  name = req.body.Name;
-   sendMessage(req.body.Name,req.body.RegistrationToken);
+  var message = {};
+
+  //When no offerToken is set in SS
+  if(proctorOfferToken == undefined){
+    message = {
+      data: {
+      type:'Nine first',
+    },
+    token:req.body.RegistrationToken
+  }
+  proctorRegistrationToken = req.body.RegistrationToken;
+  proctorName = req.body.Name;
+
+  console.log('Proctor registration token and proctor name set');
+
+  }
+
+  //When the offerToken that is available is not valid cause some other peer
+  //generated an answer token for this
+  else if (!isProctorTokenValid or addToList){
+    var data = {
+      RegistrationToken:req.body.RegistrationToken,
+      Name:req.body.Name
+    };
+    incomingPeers.push(data);
+    console.log('Added this peer to the list as Proctor token is not valid or addToList is true');
+  }
+
+  //This is the case when the offerToken avaialbe is valid
+  else if( isProctorTokenValid && !addToList){
+    message = {
+      data:{
+        type:'offer',
+        OfferToken: proctorOfferToken,
+        Name:proctorName
+      },
+      token:req.body.RegistrationToken
+    }
+
+    addToList = true;
+
+    console.log('Send the offerToken to this node and made addToList true');
+
+  }
+   sendMessage(message);
 });
 
-app.post('/sendToken',(req,res)=>{
+//This is the endpoint for setting the offerToken of the proctor
+app.post('/setToken',(req,res)=>{
   proctorOfferToken = req.body.OfferToken;
-  console.log('proctorOfferToken set');
+  isProctorTokenValid = true;
+  console.log('proctorOfferToken set and isProctorTokenValid is made true');
+  postOfferToken();
 });
 
+
+//This handles the work to be done once the offerToken is set
+function postOfferToken(){
+
+  //Return from the function if there are no peers to whom the new token should be sent
+  if(incomingPeers.length == 0 ){
+    return;
+  }
+
+  //If there are peers who are waiting for an offerToken
+  else {
+    var peer = incomingPeers[front];
+    var registrationToken = peer.RegistrationToken;
+    front++;
+    var message = {
+      data :{
+        type:'Offer',
+        OfferToken:proctorOfferToken,
+        Name:proctorName
+      },
+      token:registerationToken
+    };
+    sendMessage(message);
+  }
+}
+
+//This is the enpoint simply added to respond for browser calls
 app.get('/',(req,res)=>{
   console.log("hi");
-
 });
 
+//This is the endpoint where the answerPeer sends the answerToken to connect with the peer
 app.post('/connectProctor',(req,res)=>{
   var answerToken = req.body.AnswerToken;
   var answerNodeName = req.body.Name;
-  console.log(answerToken);
-  var message = {
+  console.log('Received an answerToken');
+
+  //This is the message to be sent to the new peer, with offerToken
+  var messageNode = {
     data:{
       type : 'answer',
       Name : answerNodeName,
       answerToken : answerToken
     },
+    token:answerToken
+  }
+
+  //It is made false since the offerToken is already sent to a peer to generate an answerToken
+  isProctorTokenValid = false;
+
+  console.log('isProctorTokenValid is made false since an answerToken is already generated');
+
+  sendMessage(messageNode);
+
+  //This is the message to be sent to the proctor node
+  var messageProctor = {
+    data : {
+      type : 'OfferToken exhausted'
+    },
     token:proctorRegistrationToken
   }
 
-  admin.messaging().send(message)
-    .then((response) => {
-      // Response is a message ID string.
-      console.log('Successfully sent message:', response);
-    })
-    .catch((error) => {
-      console.log('Error sending message:', error);
-    });
+  sendMessage(messageProctor);
 
 });
 
-function sendMessage(name,registrationToken){
-  if(proctorOfferToken == undefined ){
-    var message = {
-    data: {
-      type : 'Nine first'
-    },
-    token: registrationToken
-  };
-  console.log('Proctor registration token and proctor name set');
-  proctorRegistrationToken = registrationToken;
-  proctorName = name;
-}else{
-  var message = {
-  data: {
-    type: 'offer',
-    Name : proctorName,
-    OfferToken : proctorOfferToken,
-    peerRegistrationToken:registrationToken
-  },
-  token: registrationToken
-};
-}
+
+//Firebase send push message to the peer
+function sendMessage(message){
 
 admin.messaging().send(message)
   .then((response) => {
