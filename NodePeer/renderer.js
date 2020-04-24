@@ -220,6 +220,8 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
       //The peer is connected hence add it to the list to later access it
       connectedPeers.push(peer);
 
+      offerTypeHandler();
+
     });
 
     peer.on('data',(data)=>{
@@ -230,11 +232,6 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
 
   }
 
-  else if(type == 'OfferToken exhausted'){
-
-    offerTypeHandler();
-
-  }
 
 })
 

@@ -184,7 +184,7 @@ app.post('/connectProctor',(req,res)=>{
     token:proctorRegistrationToken
   }
 
-  sendMessage(messageProctor);
+  //sendMessage(messageProctor);
 
 });
 
