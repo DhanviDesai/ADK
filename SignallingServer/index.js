@@ -87,11 +87,7 @@ app.post('/getToken',(req,res)=>{
   //When the offerToken that is available is not valid cause some other peer
   //generated an answer token for this
   else if (!isProctorTokenValid || addToList){
-    var data = {
-      RegistrationToken:req.body.RegistrationToken,
-      Name:req.body.Name
-    };
-    incomingPeers.push(data);
+    incomingPeers.push(req.body.RegistrationToken);
     console.log('Added this peer to the list as Proctor token is not valid or addToList is true');
   }
 
@@ -118,6 +114,7 @@ app.post('/getToken',(req,res)=>{
 app.post('/setToken',(req,res)=>{
   proctorOfferToken = req.body.OfferToken;
   isProctorTokenValid = true;
+  addToList = false;
   console.log('proctorOfferToken set and isProctorTokenValid is made true');
   postOfferToken();
 });
@@ -133,8 +130,7 @@ function postOfferToken(){
 
   //If there are peers who are waiting for an offerToken
   else {
-    var peer = incomingPeers[front];
-    var registrationToken = peer.RegistrationToken;
+    var registrationToken = incomingPeers[front];
     front++;
     var message = {
       data :{

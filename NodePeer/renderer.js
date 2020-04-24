@@ -52,10 +52,6 @@ function makePeerObject(initiator){
     config: {
       iceServers: [
         { urls: 'stun:stun.l.google.com:19302' },
-        { urls: 'stun1.l.google.com:19302' },
-        { urls: 'stun2.l.google.com:19302' },
-        { urls: 'stun3.l.google.com:19302' },
-        { urls: 'stun4.l.google.com:19302' },
         { urls: 'stun:global.stun.twilio.com:3478?transport=udp' }
       ]
     }
@@ -249,7 +245,10 @@ $('#send').on('click',function(e){
   console.log(message);
   var sentMess = "<li id='sentMessage'><div>"+message+"</div></li>";
   $('#actualMessages').append(sentMess);
-  peer.send(message);
+  connectedPeers.forEach((peer, i) => {
+    peer.send(message);
+  });
+
 });
 
 // Start service
