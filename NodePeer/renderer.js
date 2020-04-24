@@ -52,6 +52,10 @@ function makePeerObject(initiator){
     config: {
       iceServers: [
         { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun1.l.google.com:19302' },
+        { urls: 'stun2.l.google.com:19302' },
+        { urls: 'stun3.l.google.com:19302' },
+        { urls: 'stun4.l.google.com:19302' },
         { urls: 'stun:global.stun.twilio.com:3478?transport=udp' }
       ]
     }
@@ -125,7 +129,7 @@ function answerTypeHandler(offerToken){
 
   //Called when the answerToken is generated
   peer.on('signal',(data)=>{
-    console.log('OfferToken generated');
+    console.log('AnswerToken generated');
 
     //Send the generated answerToken to the server to connect with the peer
     $.post(baseUrl+'/connectProctor',{
@@ -198,7 +202,7 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
     console.log('Here in connecting');
     var answerToken = serverNotificationPayload.data.answerToken;
     var name = serverNotificationPayload.data.Name;
-    console.log('answerToken generated');
+    console.log('answerToken generated for the proctor offerToken');
 
 
     //This sparks the connection between the two nodes

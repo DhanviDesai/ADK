@@ -166,7 +166,7 @@ app.post('/connectProctor',(req,res)=>{
       Name : answerNodeName,
       answerToken : answerToken
     },
-    token:answerToken
+    token:proctorRegistrationToken
   }
 
   //It is made false since the offerToken is already sent to a peer to generate an answerToken
