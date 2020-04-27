@@ -55,7 +55,7 @@ function makePeerObject(initiator){
         { urls: 'stun:global.stun.twilio.com:3478?transport=udp' }
       ]
     }
-  })
+  });
   return peer;
 }
 
@@ -79,7 +79,7 @@ ipcRenderer.on(NOTIFICATION_SERVICE_STARTED, (_, token) => {
 // Handle notification errors
 ipcRenderer.on(NOTIFICATION_SERVICE_ERROR, (_, error) => {
   console.log('notification error', error)
-})
+});
 
 // Send FCM token to backend
 ipcRenderer.on(TOKEN_UPDATED, (_, token) => {

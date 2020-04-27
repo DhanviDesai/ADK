@@ -69,7 +69,7 @@ color:
 white;
   }
   #secondaryPage{
-    display: none;
+    display: block;
   }
   #messagesPlace{
     width: 100%;
