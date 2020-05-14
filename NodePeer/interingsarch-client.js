@@ -212,6 +212,7 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
         //Update the pointers and values here correctly
         //Communicate the same to the selected direct peer
         var peerObject = {
+          type:'3',
           id:myId,
           registrationToken:myRegistraionToken,
           openConnections:openConnections,

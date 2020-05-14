@@ -53,6 +53,7 @@ app.post('/getNodes',(req,res)=>{
   console.log('id of the accessed node is '+id);
   var max = -1;
   var index = -1;
+  //Select one random node from the list
   if( nodesOnNetwork.length > 0 ){
   nodesOnNetwork.forEach((peer, i) => {
     if( peer.openConnections > max && i != index ){
