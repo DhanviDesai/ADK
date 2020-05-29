@@ -223,7 +223,7 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
       });
       peer.on('data',(data)=>{
         console.log('received data from someone');
-        console.log(data);
+        console.log(JSON.parse(data));
         handleIncomingData(data);
       });
   }
@@ -243,7 +243,7 @@ else if(type == '3'){
   });
   peer.on('data',(data)=>{
     console.log('received data');
-    console.log(data);
+    console.log(JSON.parse(data));
     handleIncomingData(data);
   });
 }
