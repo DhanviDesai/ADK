@@ -103,7 +103,7 @@ function IdGenerator (){
 
 function postDataToServer(extension,data){
 
-  $.post(baseUrl+extension,data,()=>{
+  $.post(baseUrl+'/'+extension,data,()=>{
     //console.log('success');
   })
   .done(()=>{
@@ -227,7 +227,6 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
         handleIncomingData(data);
       });
   }
-}
 else if(type == '3'){
   var answerToken = serverNotificationPayload.data.answerToken;
   peer.signal(answerToken);
