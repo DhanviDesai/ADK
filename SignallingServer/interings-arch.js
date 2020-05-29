@@ -64,7 +64,7 @@ app.post('/getNodes',(req,res)=>{
   var selectedNode = nodesOnNetwork[index];
   var message = {
     data:{
-      type:'1',
+      type:'2',
       selectedNode: JSON.stringify(selectedNode)
     },
     token:registrationToken
@@ -101,7 +101,7 @@ app.post('/selectedNode',(req,res)=>{
     var answerToken = selectedNodeInfo.answerToken;
     var message = {
       data:{
-        type:'2',
+        type:'3',
         answerToken:JSON.stringify(answerToken)
       },
       token:selectedNodeInfo.selectedRegistrationToken

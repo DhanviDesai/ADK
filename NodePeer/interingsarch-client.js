@@ -103,7 +103,7 @@ function IdGenerator (){
 
 function postDataToServer(extension,data){
 
-  $.post('http://192.168.1.9:3000/'+extension,data,()=>{
+  $.post(baseUrl+extension,data,()=>{
     //console.log('success');
   })
   .done(()=>{
@@ -171,7 +171,6 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
   var type = serverNotificationPayload.data.type;
   if(type == '1'){
   var selectedNode = serverNotificationPayload.data.selectedNode;
-  if(selectedNode == 'none'){
     console.log('There are no nodes on the network');
     console.log('I will genrate my offerToken and send it to SS to keep track');
     peer = makePeerObject(true);
@@ -189,7 +188,8 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
       };
       postDataToServer('addDataToList',peerObject);
     });
-  }else{
+  }
+    else if(type == '2'){
       var selectedNode = JSON.parse(serverNotificationPayload.data.selectedNode);
       peer = makePeerObject(false);
       console.log('I selected this node, okay no? '+JSON.stringify(selectedNode));
@@ -212,7 +212,7 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
         //Update the pointers and values here correctly
         //Communicate the same to the selected direct peer
         var peerObject = {
-          type:'3',
+          type:'4',
           id:myId,
           registrationToken:myRegistraionToken,
           openConnections:openConnections,
@@ -223,20 +223,27 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
       });
       peer.on('data',(data)=>{
         console.log('received data from someone');
+        console.log(data);
         handleIncomingData(data);
       });
   }
 }
-else if(type == '2'){
+else if(type == '3'){
   var answerToken = serverNotificationPayload.data.answerToken;
   peer.signal(answerToken);
   peer.on('connect',()=>{
     console.log('connect');
     //Also have to check for connection extensions
     //Make proper changes everywhere
+    //This is the offerNode another node which is of answerType is connected to this here
+    var peerObject = {
+      val:'FromAns'
+    };
+    peer.send(peerObject);
   });
   peer.on('data',(data)=>{
     console.log('received data');
+    console.log(data);
     handleIncomingData(data);
   });
 }
