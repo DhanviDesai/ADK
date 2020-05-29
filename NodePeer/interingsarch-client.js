@@ -222,7 +222,8 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
           openConnections:openConnections,
           closedDirect:closedDirect,
           closedDirectId:closedDirectId,
-          directPeers:directPeers
+          directPeers:directPeers,
+          directId:directId
         };
         peer.send(JSON.stringify(peerObject));
       });
@@ -251,7 +252,8 @@ else if(type == '3'){
       openConnections:openConnections,
       closedDirect:closedDirect,
       closedDirectId:closedDirectId,
-      directPeers: directPeers
+      directPeers: directPeers,
+      directId:directId
     };
     peer.send(JSON.stringify(peerObject));
   });
@@ -267,6 +269,8 @@ else if(type == '3'){
 
 function handleIncomingData(data){
 
+//Here check whether they have connections.
+//If their connected id is with you then dont extend your connection with it.
 }
 
 
