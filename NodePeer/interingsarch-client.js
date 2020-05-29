@@ -52,7 +52,7 @@ var directPeers = [];
 /*
 All nodes when first initialized have 3 open connections
 */
-var openConnections = 3;
+var openConnections = -1;
 
 /*
 All nodes have 0 direct peers whose connections are closed when initialized
@@ -68,8 +68,8 @@ var closedDirectId = [-1,-1,-1];
 There is also this confusion as to which is better, list of all the directly connected peers
 id or list of only those which have 0 open connections
 if this is chosen, then
-var directId = [-1,-1,-1];
 */
+var directId = [-1,-1,-1];
 
 /*
 This node's registraion token
@@ -169,6 +169,7 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
 
   console.log('Notification Received');
   var type = serverNotificationPayload.data.type;
+  if(openConnections<3){
   if(type == '1'){
   var selectedNode = serverNotificationPayload.data.selectedNode;
     console.log('There are no nodes on the network');
@@ -211,13 +212,17 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
         console.log('connected with that I selected that time, remember? I told you no');
         //Update the pointers and values here correctly
         //Communicate the same to the selected direct peer
+        openConnections++;
+        directId[openConnections] = selectedNode.id;
+        directPeers[openConnections] = selectedNode.registrationToken;
         var peerObject = {
           type:'4',
           id:myId,
           registrationToken:myRegistraionToken,
           openConnections:openConnections,
           closedDirect:closedDirect,
-          closedDirectId:closedDirectId
+          closedDirectId:closedDirectId,
+          directPeers:directPeers
         };
         peer.send(JSON.stringify(peerObject));
       });
@@ -236,16 +241,26 @@ else if(type == '3'){
     //Also have to check for connection extensions
     //Make proper changes everywhere
     //This is the offerNode another node which is of answerType is connected to this here
+    openConnections++;
+    directId[openConnections] = serverNotificationPayload.data.id;
+    directPeers[openConnections] = serverNotificationPayload.data.registrationToken;
     var peerObject = {
-      val:'FromAns'
+      type:'4',
+      id:myId,
+      registrationToken:myRegistraionToken,
+      openConnections:openConnections,
+      closedDirect:closedDirect,
+      closedDirectId:closedDirectId,
+      directPeers: directPeers
     };
     peer.send(JSON.stringify(peerObject));
   });
   peer.on('data',(data)=>{
     console.log('received data');
     console.log(JSON.parse(data));
-    handleIncomingData(data);
+    handleIncomingData(JSON.parse(data));
   });
+}
 }
 
 });
