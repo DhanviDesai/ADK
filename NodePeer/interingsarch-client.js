@@ -219,7 +219,7 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
           closedDirect:closedDirect,
           closedDirectId:closedDirectId
         };
-        peer.send(peerObject);
+        peer.send(JSON.stringify(peerObject));
       });
       peer.on('data',(data)=>{
         console.log('received data from someone');
@@ -239,7 +239,7 @@ else if(type == '3'){
     var peerObject = {
       val:'FromAns'
     };
-    peer.send(peerObject);
+    peer.send(JSON.stringify(peerObject));
   });
   peer.on('data',(data)=>{
     console.log('received data');
