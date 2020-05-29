@@ -104,7 +104,9 @@ app.post('/selectedNode',(req,res)=>{
     var message = {
       data:{
         type:'3',
-        answerToken:JSON.stringify(answerToken)
+        answerToken:JSON.stringify(answerToken),
+        id:selectedNodeInfo.id,
+        registrationToken:selectedNodeInfo.registrationToken
       },
       token:selectedNodeInfo.selectedRegistrationToken
     };

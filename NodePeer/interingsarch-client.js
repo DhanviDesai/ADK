@@ -47,7 +47,7 @@ closedDirectId : list containing the id's of peers that dont have any open conne
 *
 }
 */
-var directPeers = [];
+var directPeers = ['-1','-1','-1'];
 
 /*
 All nodes when first initialized have 3 open connections
@@ -69,7 +69,7 @@ There is also this confusion as to which is better, list of all the directly con
 id or list of only those which have 0 open connections
 if this is chosen, then
 */
-var directId = [-1,-1,-1];
+var directId = ['-1','-1','-1'];
 
 /*
 This node's registraion token
