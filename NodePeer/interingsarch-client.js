@@ -228,6 +228,7 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
       });
   }
 else if(type == '3'){
+  console.log('Here in I got the answer token');
   var answerToken = serverNotificationPayload.data.answerToken;
   peer.signal(answerToken);
   peer.on('connect',()=>{
