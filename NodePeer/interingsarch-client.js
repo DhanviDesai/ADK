@@ -279,25 +279,8 @@ function handleIncomingData(data){
 
 //This is the data that I get when a new node is connected...
 
-var newDirectPeers = data.directPeers;
-var newDirectId = data.directId;
-
-newDirectId.forEach((peerId, i) => {
-  if(peerId != myId){
-    directId.forEach((myPeerId, i) => {
-      if(myPeerId != peerId){
-        var newRegistration = newDirectPeers[i];
-        var getData = {
-          type:'5',
-          id:myPeerId,
-          registrationToken:newRegistration
-        };
-        peer.send(JSON.stringify(getData));
-      }
-    });
-
-  }
-});
+console.log('This is the data that I got in handleIncomingData function');
+console.log(data);
 
 
 }
