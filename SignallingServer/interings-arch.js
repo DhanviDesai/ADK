@@ -51,7 +51,7 @@ app.post('/getNodes',(req,res)=>{
   var registrationToken = req.body.RegistrationToken;
   var id = req.body.id;
   console.log('id of the accessed node is '+id);
-  var max = -1;
+  var max = -999;
   var index = -1;
   //Select one random node from the list
   if( nodesOnNetwork.length > 0 ){
@@ -104,7 +104,9 @@ app.post('/selectedNode',(req,res)=>{
     var message = {
       data:{
         type:'3',
-        answerToken:JSON.stringify(answerToken)
+        answerToken:JSON.stringify(answerToken),
+        id:selectedNodeInfo.id,
+        registrationToken:selectedNodeInfo.registrationToken
       },
       token:selectedNodeInfo.selectedRegistrationToken
     };

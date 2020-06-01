@@ -49,6 +49,9 @@ closedDirectId : list containing the id's of peers that dont have any open conne
 */
 var directPeers = ['-1','-1','-1'];
 
+
+var directPeerObjectList = [];
+
 /*
 All nodes when first initialized have 3 open connections
 */
@@ -215,6 +218,7 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
         openConnections++;
         directId[openConnections] = selectedNode.id;
         directPeers[openConnections] = selectedNode.registrationToken;
+        directPeerObjectList.push(peer);
         var peerObject = {
           type:'4',
           id:myId,
@@ -230,7 +234,7 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
       peer.on('data',(data)=>{
         console.log('received data from someone');
         console.log(JSON.parse(data));
-        handleIncomingData(data);
+        handleIncomingData(JSON.parse(data));
       });
   }
 else if(type == '3'){
@@ -271,6 +275,31 @@ function handleIncomingData(data){
 
 //Here check whether they have connections.
 //If their connected id is with you then dont extend your connection with it.
+
+
+//This is the data that I get when a new node is connected...
+
+var newDirectPeers = data.directPeers;
+var newDirectId = data.directId;
+
+newDirectId.forEach((peerId, i) => {
+  if(peerId != myId){
+    directId.forEach((myPeerId, i) => {
+      if(myPeerId != peerId){
+        var newRegistration = newDirectPeers[i];
+        var getData = {
+          type:'5',
+          id:myPeerId,
+          registrationToken:newRegistration
+        };
+        peer.send(JSON.stringify(getData));
+      }
+    });
+
+  }
+});
+
+
 }
 
 
