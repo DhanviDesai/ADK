@@ -234,7 +234,7 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
       peer.on('data',(data)=>{
         console.log('received data from someone');
         console.log(JSON.parse(data));
-        handleIncomingData(data);
+        handleIncomingData(JSON.parse(data));
       });
   }
 else if(type == '3'){
@@ -279,27 +279,8 @@ function handleIncomingData(data){
 
 //This is the data that I get when a new node is connected...
 
-var newDirectPeers = data.directPeers;
-var newDirectId = data.directId;
-
-newDirectId.forEach((peerId, i) => {
-  if(peerId == myId){
-    continue;
-  }else{
-    directId.forEach((myPeerId, i) => {
-      if(myPeerId != peerId){
-        var newRegistration = newDirectPeers[i];
-        var getData = {
-          type:'5',
-          id:myPeerId,
-          registrationToken:newRegistration
-        };
-        peer.send(getData);
-      }
-    });
-
-  }
-});
+console.log('This is the data I got in the handleIncomingData function');
+console.log(data);
 
 
 }
