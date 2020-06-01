@@ -279,7 +279,6 @@ function handleIncomingData(data){
 
 //This is the data that I get when a new node is connected...
 
-<<<<<<< HEAD
 var newDirectPeers = data.directPeers;
 var newDirectId = data.directId;
 
@@ -299,10 +298,6 @@ newDirectId.forEach((peerId, i) => {
 
   }
 });
-=======
-console.log('This is the data I got in the handleIncomingData function');
-console.log(data);
->>>>>>> 00ee43752797e1ed04b0035518347dffbf219514
 
 
 }
