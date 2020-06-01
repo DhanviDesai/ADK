@@ -279,7 +279,7 @@ function handleIncomingData(data){
 
 //This is the data that I get when a new node is connected...
 
-console.log('This is the data I got in the handleIncomingData function');
+console.log('This is the data that I got in handleIncomingData function');
 console.log(data);
 var type = data.type;
 if(type == '4'){
