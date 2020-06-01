@@ -281,6 +281,15 @@ function handleIncomingData(data){
 
 console.log('This is the data I got in the handleIncomingData function');
 console.log(data);
+var type = data.type;
+if(type == '4'){
+  var id = data.id;
+  var directPeers = data.directId;
+  directPeers.forEach((peer, i) => {
+    console.log('This is the id of the directPeer'+peer+' from the peer with id '+id);
+  });
+
+}
 
 
 }
