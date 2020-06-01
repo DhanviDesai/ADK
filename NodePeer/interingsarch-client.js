@@ -286,8 +286,10 @@ if(type == '4'){
   var id = data.id;
   var directPeers = data.directId;
   directPeers.forEach((peer, i) => {
+    if(peer != myId){
     console.log('This is the id of the directPeer'+peer+' from the peer with id '+id);
     console.log('Then think about what to do with this');
+  }
   });
 
 }
