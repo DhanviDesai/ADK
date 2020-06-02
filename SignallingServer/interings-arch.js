@@ -91,7 +91,7 @@ app.post('/addDataToList',(req,res)=>{
   var peerObject = req.body;
   if(nodesOnNetwork.length < 10){
     nodesOnNetwork.forEach((node, i) => {
-      if(peerObject.registrationToken == node.registrationToken){
+      if(peerObject.id == node.id){
         nodesOnNetwork.remove(i);
       }
     });
