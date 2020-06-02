@@ -167,6 +167,8 @@ console.log('Sending token to backend');
 
 function newOfferNodeHandler(){
 
+  //This function is used to generate new offerNodes and will be called when this node is connected to something else
+
   console.log('There are no nodes on the network');
   console.log('I will genrate my offerToken and send it to SS to keep track');
   peer = makePeerObject(true);
@@ -187,6 +189,26 @@ function newOfferNodeHandler(){
 
 }
 
+function sendStateToPeer(){
+
+  var peerObject = {
+    type:'4',
+    id:myId,
+    registrationToken:myRegistraionToken,
+    openConnections:openConnections,
+    closedDirect:closedDirect,
+    closedDirectId:closedDirectId,
+    directPeers:directPeers,
+    directId:directId
+  };
+  directPeerObjectList.forEach((peer, i) => {
+    // The newly connected node and also the new state of this node properties
+    // is sent to all the directly connected peers
+  peer.send(JSON.stringify(peerObject));
+  });
+
+}
+
 // Display notification
 ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
   // check to see if payload contains a body string, if it doesn't consider it a silent push
@@ -200,6 +222,7 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
   newOfferNodeHandler();
   }
     else if(type == '2'){
+      //An answerType node is created
       var selectedNode = JSON.parse(serverNotificationPayload.data.selectedNode);
       peer = makePeerObject(false);
       console.log('I selected this node, okay no? '+JSON.stringify(selectedNode));
@@ -218,6 +241,7 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
         });
       });
       peer.on('connect',()=>{
+        //Here I will have to create new OfferToken for this node and send it to the SS
         console.log('connected with that I selected that time, remember? I told you no');
         //Update the pointers and values here correctly
         //Communicate the same to the selected direct peer
@@ -225,19 +249,11 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
         directId[openConnections] = selectedNode.id;
         directPeers[openConnections] = selectedNode.registrationToken;
         directPeerObjectList.push(peer);
-        var peerObject = {
-          type:'4',
-          id:myId,
-          registrationToken:myRegistraionToken,
-          openConnections:openConnections,
-          closedDirect:closedDirect,
-          closedDirectId:closedDirectId,
-          directPeers:directPeers,
-          directId:directId
-        };
-        peer.send(JSON.stringify(peerObject));
+        sendStateToPeer();
         // Create new peer Object
         // Add this to the list of connected peers
+        console.log('This is from an answerNode that connected to an offerNode');
+        newOfferNodeHandler();
 
       });
       peer.on('data',(data)=>{
@@ -247,6 +263,7 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
       });
   }
 else if(type == '3'){
+  //This is the condition that is entered only by the offerNode
   console.log('Here in I got the answer token');
   var answerToken = serverNotificationPayload.data.answerToken;
   peer.signal(answerToken);
@@ -258,17 +275,7 @@ else if(type == '3'){
     openConnections++;
     directId[openConnections] = serverNotificationPayload.data.id;
     directPeers[openConnections] = serverNotificationPayload.data.registrationToken;
-    var peerObject = {
-      type:'4',
-      id:myId,
-      registrationToken:myRegistraionToken,
-      openConnections:openConnections,
-      closedDirect:closedDirect,
-      closedDirectId:closedDirectId,
-      directPeers: directPeers,
-      directId:directId
-    };
-    peer.send(JSON.stringify(peerObject));
+    sendStateToPeer();
 
     console.log('Here this offernode is conneted to a new answer node');
     console.log('Will generate a new node and make that happen');
