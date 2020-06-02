@@ -165,6 +165,28 @@ console.log('Sending token to backend');
 
 });
 
+function newOfferNodeHandler(){
+
+  console.log('There are no nodes on the network');
+  console.log('I will genrate my offerToken and send it to SS to keep track');
+  peer = makePeerObject(true);
+  peer.on('signal',(offerToken)=>{
+    console.log('Generated a new offerToken');
+    myCurrentValidOfferToken = offerToken;
+    var peerObject = {
+      id:myId,
+      registrationToken:myRegistraionToken,
+      offerToken:myCurrentValidOfferToken,
+      isOfferTokenValid:true,
+      openConnections:openConnections,
+      closedDirect:closedDirect,
+      closedDirectId:closedDirectId
+    };
+    postDataToServer('addDataToList',peerObject);
+  });
+
+}
+
 // Display notification
 ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
   // check to see if payload contains a body string, if it doesn't consider it a silent push
@@ -175,23 +197,7 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
   if(openConnections<3){
   if(type == '1'){
   var selectedNode = serverNotificationPayload.data.selectedNode;
-    console.log('There are no nodes on the network');
-    console.log('I will genrate my offerToken and send it to SS to keep track');
-    peer = makePeerObject(true);
-    peer.on('signal',(offerToken)=>{
-      console.log('Generated a new offerToken');
-      myCurrentValidOfferToken = offerToken;
-      var peerObject = {
-        id:myId,
-        registrationToken:myRegistraionToken,
-        offerToken:myCurrentValidOfferToken,
-        isOfferTokenValid:true,
-        openConnections:openConnections,
-        closedDirect:closedDirect,
-        closedDirectId:closedDirectId
-      };
-      postDataToServer('addDataToList',peerObject);
-    });
+  newOfferNodeHandler();
   }
     else if(type == '2'){
       var selectedNode = JSON.parse(serverNotificationPayload.data.selectedNode);
@@ -230,6 +236,9 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
           directId:directId
         };
         peer.send(JSON.stringify(peerObject));
+        // Create new peer Object
+        // Add this to the list of connected peers
+
       });
       peer.on('data',(data)=>{
         console.log('received data from someone');
@@ -260,6 +269,11 @@ else if(type == '3'){
       directId:directId
     };
     peer.send(JSON.stringify(peerObject));
+
+    console.log('Here this offernode is conneted to a new answer node');
+    console.log('Will generate a new node and make that happen');
+    newOfferNodeHandler();
+
   });
   peer.on('data',(data)=>{
     console.log('received data');
