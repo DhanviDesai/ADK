@@ -92,7 +92,7 @@ app.post('/addDataToList',(req,res)=>{
   if(nodesOnNetwork.length < 10){
     nodesOnNetwork.forEach((node, i) => {
       if(peerObject.id == node.id){
-        nodesOnNetwork.remove(i);
+        nodesOnNetwork.splice(i,1);
       }
     });
     nodesOnNetwork.push(peerObject);
