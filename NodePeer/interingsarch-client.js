@@ -189,6 +189,7 @@ function newOfferNodeHandler(){
 
 }
 
+//This function sends this peer's state to its direct peers
 function sendStateToPeer(){
 
   var peerObject = {
@@ -217,10 +218,14 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
   console.log('Notification Received');
   var type = serverNotificationPayload.data.type;
   if(openConnections<3){
+
+    //This condition is for when there are no new nodes available on the network and is sent by SS
   if(type == '1'){
   var selectedNode = serverNotificationPayload.data.selectedNode;
   newOfferNodeHandler();
   }
+
+  //This condition is for when a node is selected from the SS
     else if(type == '2'){
       //An answerType node is created
       var selectedNode = JSON.parse(serverNotificationPayload.data.selectedNode);
@@ -262,6 +267,8 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
         handleIncomingData(JSON.parse(data));
       });
   }
+
+  //This condition is when an answer token is received from answer node , sent by SS
 else if(type == '3'){
   //This is the condition that is entered only by the offerNode
   console.log('Here in I got the answer token');
@@ -303,15 +310,25 @@ function handleIncomingData(data){
 console.log('This is the data that I got in handleIncomingData function');
 console.log(data);
 var type = data.type;
+
+//This condition is for receiving the direct peers
 if(type == '4'){
   var id = data.id;
   var directPeers = data.directId;
+  var openConnections = data.openConnections;
   directPeers.forEach((peer, i) => {
     if(peer != myId){
-    console.log('This is the id of the directPeer'+peer+' from the peer with id '+id);
+    console.log('This is the id of the directPeer(This is a connected peer)'+peer+' from the peer with id '+id);
+    console.log('This is its openConnections '+openConnections);
     console.log('Then think about what to do with this');
   }
   });
+
+}
+
+//To act like a mediator
+else if(type == '5'){
+  //Here I will have to pass the offerToken from this node's direct node to another direct peer
 
 }
 
