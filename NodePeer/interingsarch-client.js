@@ -311,7 +311,7 @@ console.log('This is the data that I got in handleIncomingData function');
 console.log(data);
 var type = data.type;
 
-//This condition is for receiving the direct peers
+//This condition is for receiving the direct peers from the connected peers
 if(type == '4'){
   var id = data.id;
   var directPeers = data.directId;
