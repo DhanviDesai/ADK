@@ -58,6 +58,11 @@ All nodes when first initialized have 3 open connections
 var openConnections = -1;
 
 /*
+Open connections values of all the directly connected peers
+*/
+var directPeersOpenConnections=['-1','-1','-1'];
+
+/*
 All nodes have 0 direct peers whose connections are closed when initialized
 */
 var closedDirect = 0;
@@ -169,46 +174,97 @@ function newOfferNodeHandler(){
 
   //This function is used to generate new offerNodes and will be called when this node is connected to something else
 
-  console.log('There are no nodes on the network');
-  console.log('I will genrate my offerToken and send it to SS to keep track');
+//  console.log('There are no nodes on the network');
+  //console.log('I will genrate my offerToken and send it to SS to keep track');
+
+  //Makes a new offerType node
   peer = makePeerObject(true);
+
+  //Callback for generating an offerToken
   peer.on('signal',(offerToken)=>{
-    console.log('Generated a new offerToken');
+
+    //console.log('Generated a new offerToken');
+
+    //This is the currently generated offerToken
     myCurrentValidOfferToken = offerToken;
+
+    //Send this object to SS to keep track of it
     var peerObject = {
+      //this node's uid
       id:myId,
+      //this node's registration token needed by SS to send notifications
       registrationToken:myRegistraionToken,
+      //this node's offerToken that is sent to SS to spread it
       offerToken:myCurrentValidOfferToken,
+      //this is a flag value that changes based on the validity of the offerToken
       isOfferTokenValid:true,
+      //Amount of openConnections this node has
       openConnections:openConnections,
+      //Number of closedDirectly connected nodes that this node has
       closedDirect:closedDirect,
+      //List containing id of all the directly connected nodes that are closed
       closedDirectId:closedDirectId
     };
+
+    //send this data to server
     postDataToServer('addDataToList',peerObject);
+
   });
 
 }
 
-//This function sends this peer's state to its direct peers
-function sendStateToPeer(){
+//This function sends this peer's state to its direct peers for InterconnectedRings arch establishment
+function sendStateToPeer(peer){
 
   var peerObject = {
+    //type of the message for communication
     type:'4',
+    //this node's id ---required---
     id:myId,
+    //this node's registrationToken
     registrationToken:myRegistraionToken,
-    openConnections:openConnections,
+    //Number of openConnections this node has ---required---
+    mainOpenConnections:openConnections,
+    //Number of closedConnections direct nodes this node has
     closedDirect:closedDirect,
+    //List containing all the id of directly connected peers that have closedConnections
     closedDirectId:closedDirectId,
+    //List containig all registrationToken of the dierctPeers
     directPeers:directPeers,
+    //List containig all the id of directly connected peers ---required---
     directId:directId
   };
-  directPeerObjectList.forEach((peer, i) => {
-    // The newly connected node and also the new state of this node properties
-    // is sent to all the directly connected peers
+
+  //send this data to the node that was received as the parameter
   peer.send(JSON.stringify(peerObject));
+
+}
+
+//This does necessary communication with the other nodes to set up the proper data for
+//InterconnectedRings Architecture
+//Called only when a new node is connected to this node
+function doNecessary(incomingId,incomingRegistrationToken){
+
+  //Increment openConnections to indicate that one slot is closed
+  openConnections++;
+
+  //set the id of the newly connected node in the list of directly connected nodes Id list
+  directId[openConnections] = incomingId;
+
+  //set the registration token of newly connected node in the list of directPeers registrationToken
+  directPeers[openConnections] = incomingRegistrationToken;
+
+  //add this peer object to the list of directPeerObjectList
+  directPeerObjectList.push(peer);
+
+  //send this data to all the directly connected peers
+  directPeerObjectList.forEach((peer, i) => {
+    sendStateToPeer(peer);
   });
 
 }
+
+
 
 // Display notification
 ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
@@ -217,82 +273,130 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
 
   console.log('Notification Received');
   var type = serverNotificationPayload.data.type;
-  if(openConnections<3){
+  if(openConnections<2){
 
-    //This condition is for when there are no new nodes available on the network and is sent by SS
+  //This condition is for when there are no new nodes available on the network and is sent by SS
   if(type == '1'){
-  var selectedNode = serverNotificationPayload.data.selectedNode;
-  newOfferNodeHandler();
+
+    //This will handle the working of creating,posting and setting node on the SS
+    newOfferNodeHandler();
+
   }
 
   //This condition is for when a node is selected from the SS
     else if(type == '2'){
       //An answerType node is created
+
+      //selectedNode is the node that is sent from the SS after selecting a node
       var selectedNode = JSON.parse(serverNotificationPayload.data.selectedNode);
+
+      //Here an answer node is created
       peer = makePeerObject(false);
-      console.log('I selected this node, okay no? '+JSON.stringify(selectedNode));
+
+      //console.log('I selected this node, okay no? '+JSON.stringify(selectedNode));
+
+      //The selectedNode's offerToken is taken to generate an answerToken for it
       var offerToken = selectedNode.offerToken;
+
+      //Signal is sent with the offerToken to generate the answerToken
       peer.signal(offerToken);
+
+      //This is the callback that is called once the answerToken is generated
       peer.on('signal',(data)=>{
-        console.log('I also generated the answerToken for the node with id '+selectedNode.id+', I mean that is what I selected..... so');
+
+        //console.log('I also generated the answerToken for the node with id '+selectedNode.id+', I mean that is what I selected..... so');
+
+        //Get the answerToken
         var answerToken = data;
+
+        //Send this data to the SS to send it to the offerNode
         postDataToServer('selectedNode',{
+          //Id of this node
           id:myId,
+          //Generated answerToken for that offerNode
           answerToken:answerToken,
+          //How many closedConnections direct peers are present for this
           closedDirect:closedDirect,
+          //List of closedConnections directPeers id
           closedDirectId:closedDirectId,
+          //This node's registration token
           registrationToken:myRegistraionToken,
+          //Selected node's registration token
           selectedRegistrationToken:selectedNode.registrationToken
         });
       });
+
+      //This is the callback when the two nodes are connected
       peer.on('connect',()=>{
+
         //Here I will have to create new OfferToken for this node and send it to the SS
-        console.log('connected with that I selected that time, remember? I told you no');
+        //console.log('connected with that I selected that time, remember? I told you no');
         //Update the pointers and values here correctly
         //Communicate the same to the selected direct peer
-        openConnections++;
-        directId[openConnections] = selectedNode.id;
-        directPeers[openConnections] = selectedNode.registrationToken;
-        directPeerObjectList.push(peer);
-        sendStateToPeer();
+
+        //Do all the necessary communication to set up InterconnectedRings arch
+        doNecessary(selectedNode.id,selectedNode.registrationToken);
+
         // Create new peer Object
         // Add this to the list of connected peers
-        console.log('This is from an answerNode that connected to an offerNode');
+        //console.log('This is from an answerNode that connected to an offerNode');
+
+        //Handles the workin of creating, setting up and saving it in SS
         newOfferNodeHandler();
 
       });
+
+      //Callback for when the data is received from any one of the peers
       peer.on('data',(data)=>{
-        console.log('received data from someone');
-        console.log(JSON.parse(data));
+
+        //console.log('received data from someone');
+        //console.log(JSON.parse(data));
+
+        //Function that handles all the types of peer to peer communication establishment
         handleIncomingData(JSON.parse(data));
+
       });
   }
 
-  //This condition is when an answer token is received from answer node , sent by SS
+//This condition is when an answer token is received from answer node , sent by SS
 else if(type == '3'){
+
   //This is the condition that is entered only by the offerNode
-  console.log('Here in I got the answer token');
+  //console.log('Here in I got the answer token');
+
+  //Get the answerToken from the data sent from SS
   var answerToken = serverNotificationPayload.data.answerToken;
+
+  //signal this offerNode with received answerToken to connect with it
   peer.signal(answerToken);
+
+  //Callback for when the nodes are connected
   peer.on('connect',()=>{
-    console.log('connect');
+
+    //console.log('connect');
     //Also have to check for connection extensions
     //Make proper changes everywhere
     //This is the offerNode another node which is of answerType is connected to this here
-    openConnections++;
-    directId[openConnections] = serverNotificationPayload.data.id;
-    directPeers[openConnections] = serverNotificationPayload.data.registrationToken;
-    sendStateToPeer();
 
-    console.log('Here this offernode is conneted to a new answer node');
-    console.log('Will generate a new node and make that happen');
+    //Handles all the communication to set up InterconnectedRings arch
+    doNecessary(serverNotificationPayload.data.id,serverNotificationPayload.data.registrationToken);
+
+    //console.log('Here this offernode is conneted to a new answer node');
+    //console.log('Will generate a new node and make that happen');
+
     newOfferNodeHandler();
 
   });
+
+  //Callback for when data is received from a node
   peer.on('data',(data)=>{
-    console.log('received data');
-    console.log(JSON.parse(data));
+
+    //console.log('received data');
+    //console.log(JSON.parse(data));
+
+    //handles all the incoming data from the peers to set up InterconnectedRings arch
     handleIncomingData(JSON.parse(data));
+
   });
 }
 }
@@ -307,22 +411,40 @@ function handleIncomingData(data){
 
 //This is the data that I get when a new node is connected...
 
-console.log('This is the data that I got in handleIncomingData function');
-console.log(data);
+//console.log('This is the data that I got in handleIncomingData function');
+//console.log(data);
+
+//Get the type of incoming data
 var type = data.type;
 
 //This condition is for receiving the direct peers from the connected peers
 if(type == '4'){
+
+  //Get the id of the node that sent this message
   var id = data.id;
+
+  //Get the list of all directly connected peers from the node that sent the message
   var directPeers = data.directId;
-  var openConnections = data.openConnections;
-  directPeers.forEach((peer, i) => {
+
+  //Get the value of openConnections the node that sent the message has
+  var mainOpenConnections = data.mainOpenConnections;
+
+  //Only if this node is not closed, can all the extension of connections happen
+  if(mainOpenConnections<2){
+    //Do rest all extending connections logic here
+  }
+
+//Check for this code once again
+/*  directPeers.forEach((peer, i) => {
     if(peer != myId){
     console.log('This is the id of the directPeer(This is a connected peer)'+peer+' from the peer with id '+id);
     console.log('This is its openConnections '+openConnections);
     console.log('Then think about what to do with this');
+    if(openConnections < 2){
+      console.log('This is another node that is connected to this node');
+    }
   }
-  });
+});*/
 
 }
 
