@@ -27,6 +27,7 @@ body{
   width:98%;
   background-color: #f4f4f4;
   padding: 1%;
+  border-radius: 4px;
 }
 
 #internalProcessHeading{
@@ -37,6 +38,7 @@ body{
   width:98%;
   background-color: #f4f4f4;
   padding: 1%;
+  border-radius: 4px;
 }
 
 #externalProcessHeading{
@@ -47,6 +49,7 @@ body{
   width:98%;
   background-color: #f4f4f4;
   padding: 1%;
+  border-radius: 4px;
 }
 
 

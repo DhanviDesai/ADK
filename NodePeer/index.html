@@ -69,9 +69,10 @@
   </div>
 
   <script> window.$ = window.jQuery = require('./jquery.min.js');</script>
-  <script src="codeEditADK.js"></script>
-    <!-- <script>
-      require('./interingsarch-client.js');
-    </script>-->
+     <script>
+      var { getDirectPeerObjectList} = require('./interingsarch-client.js');
+      require('./distri-core.js');
+    </script>
+    <script src="codeEditADK.js"></script>
   </body>
 </html>

@@ -11,7 +11,7 @@ const Peer = require('simple-peer');
 const wrtc = require('wrtc');
 var baseUrl = 'https://adk-signallingserver.herokuapp.com';
 
-var { addPeerToList } = require('./distri-core.js');
+var { addPeerToList,printOutput } = require('./distri-core.js');
 
 
 function makePeerObject(initiator){
@@ -242,6 +242,11 @@ function sendStateToPeer(peer){
 
 }
 
+function getDirectPeerObjectList(){
+
+  return directPeerObjectList;
+}
+
 //This does necessary communication with the other nodes to set up the proper data for
 //InterconnectedRings Architecture
 //Called only when a new node is connected to this node
@@ -358,6 +363,7 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
         //console.log(JSON.parse(data));
 
         //Function that handles all the types of peer to peer communication establishment
+        console.log('Got data '+data);
         handleIncomingData(JSON.parse(data));
 
       });
@@ -400,6 +406,7 @@ else if(type == '3'){
     //console.log(JSON.parse(data));
 
     //handles all the incoming data from the peers to set up InterconnectedRings arch
+    console.log('Got data '+data);
     handleIncomingData(JSON.parse(data));
 
   });
@@ -478,6 +485,11 @@ else if(type == '5'){
 
 }
 
+else if(type == '12'){
+
+  console.log(data);
+}
+
 
 }
 
@@ -486,3 +498,6 @@ else if(type == '5'){
 const senderId = '159515945544' // <-- replace with FCM sender ID from FCM web admin under Settings->Cloud Messaging
 //console.log('starting service and registering a client')
 ipcRenderer.send(START_NOTIFICATION_SERVICE, senderId);
+
+
+module.exports = { getDirectPeerObjectList };

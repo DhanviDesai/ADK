@@ -2,6 +2,8 @@
 var list = ['Keerthana','Anand'];
 var i=0;
 
+var Peer = require('simple-peer');
+
 var peerList=[];
 
 //Return the number of processes available
@@ -20,8 +22,21 @@ function rank(){
 
 }
 
-function send(obj){
-  console.log(obj);
+
+function send(obj,peerL){
+  var peerList = JSON.parse(peerL);
+  console.log(peerList);
+  console.log(obj.to - 1);
+  var index = obj.to - 1;
+  var sendingData = {
+    type:'12',
+    data:obj.data
+  };
+  console.log(sendingData);
+  console.log('I am sending this data to other peer');
+  var peer = peerList[index];
+  console.log(peer);
+  peer.send(JSON.stringify(sendingData));
 }
 
 function recv(obj){
@@ -29,8 +44,12 @@ function recv(obj){
 }
 
 function addPeerToList(peer){
+  peer.send(JSON.stringify({data:'sent from distri-core.js'}));
   peerList.push(peer);
-  console.log(peerList);
 }
 
-module.exports = {send,recv,size,rank,addPeerToList};
+function printOutput(x){
+  console.log(x);
+}
+
+module.exports = {send,recv,size,rank,addPeerToList,printOutput};
