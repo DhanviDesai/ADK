@@ -1,2 +1,10 @@
+
+var s = size();
+print(s);
+if(r == 0 ){
 send({to:1,data:'Hello'});
-print('Hello');
+}
+else{
+var data = recv({from:0});
+print(data);
+}

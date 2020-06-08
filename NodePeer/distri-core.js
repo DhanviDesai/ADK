@@ -1,5 +1,4 @@
 //var adk-core = require('./adk-core');
-var list = ['Keerthana','Anand'];
 var i=0;
 
 
@@ -30,7 +29,7 @@ function send(obj){
       data:obj.data
     };
     peerList.forEach((peer, i) => {
-      peer.send(codeData);
+      peer.send(JSON.stringify(codeData));
     });
 
   }
@@ -89,4 +88,4 @@ function recv(obj){
   return receivedData;
 }
 
-module.exports = {send,recv,size,rank,print,receivedCode,receivedData};
+module.exports = {send,recv,size,rank,print,setReceivedCode,setReceivedData};
