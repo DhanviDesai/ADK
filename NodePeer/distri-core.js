@@ -14,14 +14,15 @@ function size(){
 function rank(){
   //I will have to return the index of this node in the array of available processors
   // of the root node
+  var rank = 0;
   var id = getMyId();
 
   rankList.forEach((peerId, i) => {
     if(peerId == id){
-      return i+1;
+      rank= i+1;
     }
   });
-
+  return rank;
 
 }
 
