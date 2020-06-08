@@ -1,5 +1,6 @@
-//var adk-core = require('./adk-core');
-var i=0;
+
+
+var rankList = [];
 
 
 //Return the number of processes available
@@ -13,8 +14,14 @@ function size(){
 function rank(){
   //I will have to return the index of this node in the array of available processors
   // of the root node
-  return i;
-  i++;
+  var id = getMyId();
+
+  rankList.forEach((peerId, i) => {
+    if(peerId == id){
+      return i+1;
+    }
+  });
+
 
 }
 
@@ -30,6 +37,17 @@ function send(obj){
     };
     peerList.forEach((peer, i) => {
       peer.send(JSON.stringify(codeData));
+    });
+
+  }
+
+  else if(obj.to == 'allRank'){
+    var rankData = {
+      type:'13',
+      data:obj.data
+    };
+    peerList.forEach((peer, i) => {
+      peer.send(JSON.stringify(rankData));
     });
 
   }
@@ -79,6 +97,10 @@ function setReceivedData(data){
   }
 }
 
+function setRankList(data){
+  rankList = data;
+}
+
 
 function print(something){
     $('#outputProcess').append("<p id='actualOutput'>"+something+"</p");
@@ -88,4 +110,4 @@ function recv(obj){
   return receivedData;
 }
 
-module.exports = {send,recv,size,rank,print,setReceivedCode,setReceivedData};
+module.exports = {send,recv,size,rank,print,setReceivedCode,setReceivedData,setRankList};

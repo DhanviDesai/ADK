@@ -11,7 +11,7 @@ const Peer = require('simple-peer');
 const wrtc = require('wrtc');
 var baseUrl = 'https://adk-signallingserver.herokuapp.com';
 
-var { setReceivedCode,setReceivedData } = require('./distri-core.js');
+var { setReceivedCode,setReceivedData,setRankList } = require('./distri-core.js');
 
 
 function makePeerObject(initiator){
@@ -247,6 +247,16 @@ function getDirectPeerObjectList(){
   return directPeerObjectList;
 }
 
+function getDirectPeerId(){
+
+  return directId;
+}
+
+function getMyId(){
+
+  return myId;
+}
+
 //This does necessary communication with the other nodes to set up the proper data for
 //InterconnectedRings Architecture
 //Called only when a new node is connected to this node
@@ -262,12 +272,16 @@ function doNecessary(incomingId,incomingRegistrationToken){
   directPeers[openConnections] = incomingRegistrationToken;
 
   //add this peer object to the list of directPeerObjectList
-  directPeerObjectList.push(peer);
+  var directPeer = {
+    id:incomingId,
+    peer:peer
+  };
+  directPeerObjectList.push(directPeer);
 
 
   //send this data to all the directly connected peers
-  directPeerObjectList.forEach((peer, i) => {
-    sendStateToPeer(peer);
+  directPeerObjectList.forEach((directPeer, i) => {
+    sendStateToPeer(directPeer.peer);
   });
 
 }
@@ -494,6 +508,12 @@ else if(type == '11'){
   setReceivedCode(data.data);
 }
 
+else if(type == '13'){
+  console.log('Got rankList');
+  console.log(data);
+  setRankList(data.data);
+}
+
 
 }
 
@@ -504,4 +524,4 @@ const senderId = '159515945544' // <-- replace with FCM sender ID from FCM web a
 ipcRenderer.send(START_NOTIFICATION_SERVICE, senderId);
 
 
-module.exports = { getDirectPeerObjectList };
+module.exports = { getDirectPeerObjectList,getDirectPeerId,getMyId };
