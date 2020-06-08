@@ -276,8 +276,8 @@ function doNecessary(incomingId,incomingRegistrationToken){
 
 
   //send this data to all the directly connected peers
-  directPeerObjectList.forEach((directPeer, i) => {
-    sendStateToPeer(directPeer.peer);
+  directPeerObjectList.forEach((peer, i) => {
+    sendStateToPeer(peer);
   });
 
 }
