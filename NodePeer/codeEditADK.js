@@ -7,6 +7,7 @@ $('#runButton').on('click',(e)=>{
   childProcess.exec('echo "'+code+'" > temp1.js');
   var cp = childProcess.fork('temp1.js',{ stdio: 'pipe' });
   cp.stdout.on('data',(data)=>{
+    console.log(data);
       $('#outputProcess').append("<p id='actualOutput'>"+data+"</p");
   });
   cp.stderr.on('data',(data)=>{

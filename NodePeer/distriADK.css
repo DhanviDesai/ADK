@@ -2,7 +2,7 @@
 body{
   margin:0;
   padding:0;
-  background-color: #000000;
+  background-color: #7e7e7e;
 }
 
 #headerInstructions{
@@ -10,12 +10,43 @@ body{
   width: 75%;
   top: 1%;
   left: 1%;
+  font-size: 16px;
   height: 15%;
-  background-color: #fff;
+  background-color: #f4f4f4;
   padding: 8px;
   border: none;
   overflow: hidden;
   border-radius: 4px;
+}
+
+#outputProcessHeading{
+  font-size: 16px;
+  position: sticky;
+  position: -webkit-sticky;
+  top:0;
+  width:98%;
+  background-color: #f4f4f4;
+  padding: 1%;
+}
+
+#internalProcessHeading{
+  font-size: 16px;
+  position: sticky;
+  position: -webkit-sticky;
+  top:0;
+  width:98%;
+  background-color: #f4f4f4;
+  padding: 1%;
+}
+
+#externalProcessHeading{
+  font-size: 16px;
+  position: sticky;
+  position: -webkit-sticky;
+  top:0;
+  width:98%;
+  background-color: #f4f4f4;
+  padding: 1%;
 }
 
 
@@ -108,4 +139,5 @@ p{
   background-color: #fff;
   top: 69%;
   border-radius: 4px;
+  overflow-y: auto;
 }

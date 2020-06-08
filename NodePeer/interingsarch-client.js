@@ -11,6 +11,8 @@ const Peer = require('simple-peer');
 const wrtc = require('wrtc');
 var baseUrl = 'https://adk-signallingserver.herokuapp.com';
 
+var { addPeerToList } = require('./distri-core.js');
+
 
 function makePeerObject(initiator){
   var peer = new Peer({
@@ -256,6 +258,9 @@ function doNecessary(incomingId,incomingRegistrationToken){
 
   //add this peer object to the list of directPeerObjectList
   directPeerObjectList.push(peer);
+
+  //Have the peer list even in distri-core
+  addPeerToList(peer);
 
   //send this data to all the directly connected peers
   directPeerObjectList.forEach((peer, i) => {
