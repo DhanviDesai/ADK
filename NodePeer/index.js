@@ -21,6 +21,8 @@ function createWindow () {
     }
   });
 
+  win.maximize();
+
   setupPushReceiver(win.webContents);
 
   // and load the index.html of the app.

@@ -5,7 +5,8 @@
     <title>ADK</title>
     <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
   <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
-  <link rel="stylesheet" href="index.css" type="text/css">
+<!--  <link rel="stylesheet" href="index.css" type="text/css"> -->
+  <link rel="stylesheet" href="distriADK.css" type="text/css">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Roboto:wght@100&display=swap" rel="stylesheet">
   </head>
   <body>
@@ -18,7 +19,7 @@
       <br>
       <button id="nameSubmit" >Submit</button>
     </div>-->
-    <div id="secondaryPage">
+<!--  <div id="secondaryPage">
     <div id="background"></div>
     <div id="backgroundColor"></div>
     <div id="OnTop">
@@ -29,10 +30,42 @@
         <input id="message" type="text" name="message" placeholder="Enter your message" disabled/>
         <button id="send" disabled>Send</button>
     </div>
+  </div>-->
+
+  <!-- This section is for some heading and instructions -->
+  <div id="headerInstructions">
+    <p style="width:auto;">Start typing your parallel program</p>
+    <button id="runButton">Run</button>
   </div>
+
+  <!-- This will be for text area -->
+  <div id="codeEditorArea">
+    <textarea id="codeEditor" autofocus=true rows="20" cols="70"></textarea>
+  </div>
+
+  <!-- This section is for run button and other controls -->
+  <!--<div id="controls">
+  </div>-->
+
+  <!-- This will be for  section showing where all the processes are being executed -->
+  <div id="showInternalProcess">
+    <p>Your process </p>
+  </div>
+
+  <!-- This will be for the bottom section for output -->
+  <div id="outputProcess">
+    <p>Output</p>
+  </div>
+
+  <!-- This section is for showing which and all processes from other computers are being executed here -->
+  <div id="showExternalProcess">
+    <p>Your processor</p>
+  </div>
+
   <script> window.$ = window.jQuery = require('./jquery.min.js');</script>
-    <script>
+  <script src="codeEditADK.js"></script>
+    <!-- <script>
       require('./interingsarch-client.js');
-    </script>
+    </script>-->
   </body>
 </html>

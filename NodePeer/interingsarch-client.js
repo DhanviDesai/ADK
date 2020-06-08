@@ -197,13 +197,13 @@ function newOfferNodeHandler(){
       //this node's offerToken that is sent to SS to spread it
       offerToken:myCurrentValidOfferToken,
       //this is a flag value that changes based on the validity of the offerToken
-      isOfferTokenValid:true,
+      //isOfferTokenValid:true,(removed for now)
       //Amount of openConnections this node has
       openConnections:openConnections,
       //Number of closedDirectly connected nodes that this node has
-      closedDirect:closedDirect,
+      //closedDirect:closedDirect,(removed for now)
       //List containing id of all the directly connected nodes that are closed
-      closedDirectId:closedDirectId
+      //closedDirectId:closedDirectId(removed for now)
     };
 
     //send this data to server
@@ -222,15 +222,15 @@ function sendStateToPeer(peer){
     //this node's id ---required---
     id:myId,
     //this node's registrationToken
-    registrationToken:myRegistraionToken,
+    //registrationToken:myRegistraionToken,(removed for now)
     //Number of openConnections this node has ---required---
     mainOpenConnections:openConnections,
     //Number of closedConnections direct nodes this node has
-    closedDirect:closedDirect,
+    //closedDirect:closedDirect,(removed for now)
     //List containing all the id of directly connected peers that have closedConnections
-    closedDirectId:closedDirectId,
+    //closedDirectId:closedDirectId,(removed for now)
     //List containig all registrationToken of the dierctPeers
-    directPeers:directPeers,
+    //directPeers:directPeers,(removed for now)
     //List containig all the id of directly connected peers ---required---
     directId:directId
   };
@@ -316,9 +316,9 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
           //Generated answerToken for that offerNode
           answerToken:answerToken,
           //How many closedConnections direct peers are present for this
-          closedDirect:closedDirect,
+          //closedDirect:closedDirect,(removed for now)
           //List of closedConnections directPeers id
-          closedDirectId:closedDirectId,
+          //closedDirectId:closedDirectId,(removed for now)
           //This node's registration token
           registrationToken:myRegistraionToken,
           //Selected node's registration token
@@ -424,7 +424,7 @@ if(type == '4'){
   var id = data.id;
 
   //Get the list of all directly connected peers from the node that sent the message
-  var directPeers = data.directId;
+  var directPeersId = data.directId;
 
   //Get the value of openConnections the node that sent the message has
   var mainOpenConnections = data.mainOpenConnections;
@@ -432,7 +432,26 @@ if(type == '4'){
   //Only if this node is not closed, can all the extension of connections happen
   if(mainOpenConnections<2){
     //Do rest all extending connections logic here
+
+    //I can start extending my connection by going through the list of my connected
+    //node's directly connected peers
+    directPeersId.forEach((nodeId, i) => {
+
+      //Check whether this node is me
+      if(nodeId != myId){
+
+        //This is true for only its other connected node
+
+        //Here I will ask this node to connect me to that node
+
+        console.log('I will ask the node to connect me with '+nodeId);
+      }
+
+    });
+
   }
+
+
 
 //Check for this code once again
 /*  directPeers.forEach((peer, i) => {
@@ -461,4 +480,4 @@ else if(type == '5'){
 // Start service
 const senderId = '159515945544' // <-- replace with FCM sender ID from FCM web admin under Settings->Cloud Messaging
 //console.log('starting service and registering a client')
-ipcRenderer.send(START_NOTIFICATION_SERVICE, senderId)
+ipcRenderer.send(START_NOTIFICATION_SERVICE, senderId);
