@@ -2,15 +2,12 @@
 var list = ['Keerthana','Anand'];
 var i=0;
 
-var Peer = require('simple-peer');
-
-var peerList=[];
 
 //Return the number of processes available
 function size(){
   //Get this from the number of open needed processes available
   //Default is 3
-  return peerList.length;
+  return getDirectPeerObjectList().length;
 }
 
 //This is the uid that is assigned to each process that is available
@@ -23,33 +20,73 @@ function rank(){
 }
 
 
-function send(obj,peerL){
-  var peerList = JSON.parse(peerL);
-  console.log(peerList);
-  console.log(obj.to - 1);
-  var index = obj.to - 1;
-  var sendingData = {
-    type:'12',
-    data:obj.data
-  };
-  console.log(sendingData);
-  console.log('I am sending this data to other peer');
-  var peer = peerList[index];
-  console.log(peer);
-  peer.send(JSON.stringify(sendingData));
+function send(obj){
+  var peerList = getDirectPeerObjectList();
+
+  //send the code to all the peers
+  if(obj.to == 'all'){
+    var codeData = {
+      type: '11',
+      data:obj.data
+    };
+    peerList.forEach((peer, i) => {
+      peer.send(codeData);
+    });
+
+  }
+
+  //send the data intended to send by the programmer
+  else{
+    var index = obj.to - 1;
+    var sendingData = {
+      type:'12',
+      data:obj.data
+    };
+    console.log(sendingData);
+    console.log('I am sending this data to other peer');
+    var peer = peerList[index];
+    console.log(peer);
+    peer.send(JSON.stringify(sendingData));
+  }
+}
+
+function executeCode(){
+  if(isCodeReceived && isDataReceived){
+    childProcess.exec('echo "'+receivedCode+'" > temp1.js');
+    require('./temp1.js');
+    delete require.cache[require.resolve('./temp1.js')];
+  }
+}
+
+var receivedData;
+var receivedCode;
+var isCodeReceived = false;
+var isDataReceived = false;
+
+
+function setReceivedCode(code){
+  receivedCode = code;
+  isCodeReceived = true;
+  if(isCodeReceived && isDataReceived ){
+    executeCode();
+  }
+}
+
+function setReceivedData(data){
+  receivedData = data;
+  isDataReceived = true;
+  if(isCodeReceived && isDataReceived ){
+    executeCode();
+  }
+}
+
+
+function print(something){
+    $('#outputProcess').append("<p id='actualOutput'>"+something+"</p");
 }
 
 function recv(obj){
-  console.log(obj);
+  return receivedData;
 }
 
-function addPeerToList(peer){
-  peer.send(JSON.stringify({data:'sent from distri-core.js'}));
-  peerList.push(peer);
-}
-
-function printOutput(x){
-  console.log(x);
-}
-
-module.exports = {send,recv,size,rank,addPeerToList,printOutput};
+module.exports = {send,recv,size,rank,print,receivedCode,receivedData};

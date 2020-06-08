@@ -1,11 +1,17 @@
-var childProcess = require('child_process');
+
 
 $('#runButton').on('click',(e)=>{
   console.log(getDirectPeerObjectList());
   console.log('clicked on run button');
   var code = $('#codeEditor').val();
-  console.log(code);
+//  console.log(code);
   childProcess.exec('echo "'+code+'" > temp1.js');
+  send({to:'all',data:code});
+  require('./temp1.js');
+  delete require.cache[require.resolve('./temp1.js')];
+
+
+  /*
   var cp = childProcess.fork('temp1.js',{ stdio: 'pipe' },JSON.stringify(getDirectPeerObjectList));
   cp.stdout.on('data',(data)=>{
     console.log(data);
@@ -18,4 +24,5 @@ $('#runButton').on('click',(e)=>{
     console.log('done');
     childProcess.exec('rm temp1.js');
   });
+  */
 });

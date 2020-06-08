@@ -11,7 +11,7 @@ const Peer = require('simple-peer');
 const wrtc = require('wrtc');
 var baseUrl = 'https://adk-signallingserver.herokuapp.com';
 
-var { addPeerToList,printOutput } = require('./distri-core.js');
+var { receivedCode,receivedData } = require('./distri-core.js');
 
 
 function makePeerObject(initiator){
@@ -264,8 +264,6 @@ function doNecessary(incomingId,incomingRegistrationToken){
   //add this peer object to the list of directPeerObjectList
   directPeerObjectList.push(peer);
 
-  //Have the peer list even in distri-core
-  addPeerToList(peer);
 
   //send this data to all the directly connected peers
   directPeerObjectList.forEach((peer, i) => {
@@ -363,7 +361,6 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
         //console.log(JSON.parse(data));
 
         //Function that handles all the types of peer to peer communication establishment
-        console.log('Got data '+data);
         handleIncomingData(JSON.parse(data));
 
       });
@@ -406,7 +403,6 @@ else if(type == '3'){
     //console.log(JSON.parse(data));
 
     //handles all the incoming data from the peers to set up InterconnectedRings arch
-    console.log('Got data '+data);
     handleIncomingData(JSON.parse(data));
 
   });
@@ -486,8 +482,16 @@ else if(type == '5'){
 }
 
 else if(type == '12'){
-
+  console.log('Got data');
   console.log(data);
+  setReceivedData(data.data);
+}
+
+else if(type == '11'){
+
+  console.log('Got code');
+  console.log(data);
+  setReceivedCode(data.data);
 }
 
 
