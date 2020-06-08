@@ -272,11 +272,7 @@ function doNecessary(incomingId,incomingRegistrationToken){
   directPeers[openConnections] = incomingRegistrationToken;
 
   //add this peer object to the list of directPeerObjectList
-  var directPeer = {
-    id:incomingId,
-    peer:peer
-  };
-  directPeerObjectList.push(directPeer);
+  directPeerObjectList.push(peer);
 
 
   //send this data to all the directly connected peers
