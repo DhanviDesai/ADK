@@ -11,7 +11,7 @@ const Peer = require('simple-peer');
 const wrtc = require('wrtc');
 var baseUrl = 'https://adk-signallingserver.herokuapp.com';
 
-var { receivedCode,receivedData } = require('./distri-core.js');
+var { setReceivedCode,setReceivedData } = require('./distri-core.js');
 
 
 function makePeerObject(initiator){

@@ -1,4 +1,4 @@
-
+var r = rank();
 var s = size();
 print(s);
 if(r == 0 ){
