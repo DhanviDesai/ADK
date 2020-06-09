@@ -31,7 +31,7 @@ function rank(){
   myRank = rank;
 
   if(myRank == 0){
-    send({to:'allId',id:id});
+    send({to:'allId',data:id});
     rankList = getDirectPeerObjectList();
   }
   return rank;
