@@ -52,6 +52,7 @@ function send(obj){
       type: '11',
       data:obj.data
     };
+    console.log(codeData);
     peerList.forEach((peer, i) => {
       peer.send(JSON.stringify(codeData));
     });
@@ -106,7 +107,7 @@ function send(obj){
 }
 
 function executeCode(code){
-  
+
   childProcess.exec('echo "'+receivedCode+'" > temp1.js');
   require('./temp1.js');
   delete require.cache[require.resolve('./temp1.js')];
