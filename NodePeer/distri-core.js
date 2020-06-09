@@ -4,6 +4,10 @@ var rankList = [];
 
 var myRank;
 
+var myId;
+
+var rootProcessId;
+
 
 //Return the number of processes available
 function size(){
@@ -17,7 +21,7 @@ function rank(){
   //I will have to return the index of this node in the array of available processors
   // of the root node
   var rank = 0;
-  var id = getMyId();
+  myId = getMyId();
 
   rankList.forEach((peerId, i) => {
     if(peerId == id){
@@ -25,8 +29,16 @@ function rank(){
     }
   });
   myRank = rank;
+
+  if(myRank == 0){
+    send({to:'allId',id:myId});
+  }
   return rank;
 
+}
+
+function setRootProcessId(id){
+  rootProcessId = id;
 }
 
 
@@ -56,16 +68,37 @@ function send(obj){
 
   }
 
+  else if(obj.to == 'allId'){
+    var idData = {
+      type:'15',
+      data:obj.data
+    };
+    peerList.forEach((peer,i)=>{
+      peer.send(JSON.stringify(idData));
+    });
+  }
+
   //send the data intended to send by the programmer
   else{
-    var index = obj.to - 1;
+    var index;
+    if(obj.to == 0){
+      var idList = getDirectPeerId();
+      idList.forEach((node, i) => {
+        if(node == rootProcessId ){
+          index = i;
+        }
+      });
+
+    }else{
+      index = obj.to - 1;
+    }
     var sendingData = {
       type:'12',
       data:obj.data
     };
     console.log(sendingData);
     console.log('I am sending this data to other peer');
-    var peer = peerList[index];
+    var peer = rankList[index];
     console.log(peer);
     peer.send(JSON.stringify(sendingData));
   }
@@ -114,4 +147,4 @@ async function recv(obj){
 }
 
 
-module.exports = {send,recv,size,rank,print,executeCode,setReceivedData,setRankList};
+module.exports = {send,recv,size,rank,print,executeCode,setReceivedData,setRankList,setRootProcessId};

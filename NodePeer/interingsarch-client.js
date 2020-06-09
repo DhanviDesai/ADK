@@ -11,7 +11,7 @@ const Peer = require('simple-peer');
 const wrtc = require('wrtc');
 var baseUrl = 'https://adk-signallingserver.herokuapp.com';
 
-var { executeCode,getReceivedData,setRankList } = require('./distri-core.js');
+var { executeCode,setReceivedData,setRankList,setRootProcessId } = require('./distri-core.js');
 
 
 function makePeerObject(initiator){
@@ -527,6 +527,10 @@ else if(type == '11'){
 
 else if(type == '13'){
   setRankList(data.data);
+}
+
+else if(type == '15'){
+  setRootProcessId(data.data);
 }
 
 
