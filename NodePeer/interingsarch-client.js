@@ -518,10 +518,12 @@ else if(type == '5'){
 }
 
 else if(type == '12'){
+  console.log('Got data');
   setReceivedData(data.data);
 }
 
 else if(type == '11'){
+  console.log('Got code');
   executeCode(data.data);
 }
 

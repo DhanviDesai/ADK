@@ -106,6 +106,7 @@ function send(obj){
 }
 
 function executeCode(code){
+  
   childProcess.exec('echo "'+receivedCode+'" > temp1.js');
   require('./temp1.js');
   delete require.cache[require.resolve('./temp1.js')];
@@ -115,11 +116,11 @@ var receivedData;
 var receivedCode;
 var isCodeReceived = false;
 var isDataReceived = false;
-var receivedDatalist = [];
+var receivedDataList = [];
 
 
 async function setReceivedData(data){
-  receivedDatalist.push(data);
+  receivedDataList.push(data);
   return true;
 }
 
@@ -136,12 +137,13 @@ function print(something){
 
 
 async function recv(obj){
-  if(receivedDatalist.length > 0){
-    return receivedDatalist.shift();
+  console.log('This is receivedDataList '+receivedDataList)
+  if(receivedDataList.length > 0){
+    return receivedDataList.shift();
   }else{
     let result = await setReceivedData();
     if(result){
-      return receivedDatalist.shift();
+      return receivedDataList.shift();
     }
   }
 

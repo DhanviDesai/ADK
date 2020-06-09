@@ -7,7 +7,7 @@ $('#runButton').on('click',(e)=>{
   console.log(code);
   childProcess.exec('echo "'+code+'" > temp1.js');
   send({to:'allRank',data:getDirectPeerId()});
-  send({to:'all',data:''+code});
+  send({to:'all',data:code});
   require('./temp1.js');
   delete require.cache[require.resolve('./temp1.js')];
 
