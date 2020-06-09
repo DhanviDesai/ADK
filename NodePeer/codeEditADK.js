@@ -1,10 +1,10 @@
 
 
 $('#runButton').on('click',(e)=>{
-  console.log(getDirectPeerObjectList());
+  //console.log(getDirectPeerObjectList());
   console.log('clicked on run button');
-  var code = $('#codeEditor').val();
-//  console.log(code);
+  var code = $('#codeEditor').text();
+  console.log(code);
   childProcess.exec('echo "'+code+'" > temp1.js');
   send({to:'allRank',data:getDirectPeerId()});
   send({to:'all',data:''+code});
