@@ -518,7 +518,7 @@ else if(type == '5'){
 }
 
 else if(type == '12'){
-  getReceivedData(data.data);
+  setReceivedData(data.data);
 }
 
 else if(type == '11'){

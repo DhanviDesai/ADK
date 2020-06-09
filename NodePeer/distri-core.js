@@ -72,32 +72,24 @@ function send(obj){
 }
 
 function executeCode(code){
-  if(isCodeReceived && isDataReceived){
-    childProcess.exec('echo "'+receivedCode+'" > temp1.js');
-    require('./temp1.js');
-    delete require.cache[require.resolve('./temp1.js')];
-  }
+  childProcess.exec('echo "'+receivedCode+'" > temp1.js');
+  require('./temp1.js');
+  delete require.cache[require.resolve('./temp1.js')];
 }
 
 var receivedData;
 var receivedCode;
 var isCodeReceived = false;
 var isDataReceived = false;
-
-
-
 var receivedDatalist = [];
 
-function getReceivedData(data){
-  if(myRank == 0 ){
-    receivedDatalist.push(data);
-    if(receivedDatalist.length == rankList.length){
-      return receivedDatalist;
-    }
-  }else{
-    return data;
-  }
+
+async function setReceivedData(data){
+  receivedDatalist.push(data);
+  return true;
 }
+
+
 
 function setRankList(data){
   rankList = data;
@@ -108,13 +100,18 @@ function print(something){
     $('#outputProcess').append("<p id='actualOutput'>"+something+"</p");
 }
 
-var index = -1;
 
-//Get data here
 async function recv(obj){
-  var data = await getReceivedData();
-  index++;
-  return data[index];
+  if(receivedDatalist.length > 0){
+    return receivedDatalist.shift();
+  }else{
+    let result = await setReceivedData();
+    if(result){
+      return receivedDatalist.shift();
+    }
+  }
+
 }
 
-module.exports = {send,recv,size,rank,print,executeCode,getReceivedData,setRankList};
+
+module.exports = {send,recv,size,rank,print,executeCode,setReceivedData,setRankList};
