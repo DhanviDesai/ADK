@@ -121,8 +121,10 @@ var receivedDataList = [];
 
 
 async function setReceivedData(data){
-  receivedDataList.push(data);
-  return true;
+  if(data != undefined){
+    receivedDataList.push(data);
+    return true;
+  }
 }
 
 
