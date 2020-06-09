@@ -21,7 +21,7 @@ function rank(){
   //I will have to return the index of this node in the array of available processors
   // of the root node
   var rank = 0;
-  myId = getMyId();
+  var id = getMyId();
 
   rankList.forEach((peerId, i) => {
     if(peerId == id){
@@ -31,7 +31,7 @@ function rank(){
   myRank = rank;
 
   if(myRank == 0){
-    send({to:'allId',id:myId});
+    send({to:'allId',id:id});
     rankList = getDirectPeerObjectList();
   }
   return rank;
@@ -99,7 +99,7 @@ function send(obj){
     };
     console.log(sendingData);
     console.log('I am sending this data to other peer');
-    var peer = rankList[index];
+    var peer = peerList[index];
     console.log(peer);
     peer.send(JSON.stringify(sendingData));
   }
