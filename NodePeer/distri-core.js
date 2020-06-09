@@ -108,7 +108,7 @@ function send(obj){
 
 function executeCode(code){
 
-  childProcess.exec('echo "'+receivedCode+'" > temp1.js');
+  childProcess.exec('echo "'+code+'" > temp1.js');
   require('./temp1.js');
   delete require.cache[require.resolve('./temp1.js')];
 }

@@ -519,19 +519,23 @@ else if(type == '5'){
 
 else if(type == '12'){
   console.log('Got data');
+  console.log(data.data);
   setReceivedData(data.data);
 }
 
 else if(type == '11'){
   console.log('Got code');
+  console.log(data.data);
   executeCode(data.data);
 }
 
 else if(type == '13'){
+  console.log('Got rankList '+data.data);
   setRankList(data.data);
 }
 
 else if(type == '15'){
+  console.log('Got root processId '+data.data);
   setRootProcessId(data.data);
 }
 
