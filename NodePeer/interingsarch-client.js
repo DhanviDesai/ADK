@@ -441,6 +441,15 @@ if(type == '4'){
   //Get the id of the node that sent this message
   var id = data.id;
 
+  //Get the index of this node
+  var index;
+  directId.forEach((node, i) => {
+    if(node.id == id){
+      index = i;
+    };
+  });
+
+
   //Get the list of all directly connected peers from the node that sent the message
   var directPeersId = data.directId;
 
@@ -463,6 +472,20 @@ if(type == '4'){
         //Here I will ask this node to connect me to that node
 
         console.log('I will ask the node to connect me with '+nodeId);
+        var peer = makePeerObject(true);
+        peer.on('signal',(offerToken)=>{
+          //Got the offerToken here to connect with other node,
+          var extendConnectionMessage = {
+            type:'5',
+            id:myId,
+            nodeId:nodeId,
+            offerToken:offerToken,
+          };
+
+          directPeerObjectList[index].send(JSON.stringify(extendConnectionMessage));
+
+        })
+
       }
 
     });
@@ -489,24 +512,20 @@ if(type == '4'){
 else if(type == '5'){
   //Here I will have to pass the offerToken from this node's direct node to another direct peer
 
+  console.log('Got message here from '+data.id);
+  console.log('This node wants to connect with node '+data.nodeId);
+
 }
 
 else if(type == '12'){
-  console.log('Got data');
-  console.log(data);
   setReceivedData(data.data);
 }
 
 else if(type == '11'){
-
-  console.log('Got code');
-  console.log(data);
   setReceivedCode(data.data);
 }
 
 else if(type == '13'){
-  console.log('Got rankList');
-  console.log(data);
   setRankList(data.data);
 }
 

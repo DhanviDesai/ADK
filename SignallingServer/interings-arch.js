@@ -50,12 +50,12 @@ Function that is contacted by the nodes once they get registrationToken to acces
 app.post('/getNodes',(req,res)=>{
   var registrationToken = req.body.RegistrationToken;
   var id = req.body.id;
-  console.log('id of the accessed node is '+id);
+//  console.log('id of the accessed node is '+id);
   var max = -999;
   var index = -1;
   //Select one random node from the list
   if( nodesOnNetwork.length > 0 ){
-    console.log("In here, new node");
+  //  console.log("In here, new node");
   nodesOnNetwork.forEach((peer, i) => {
     if( peer.openConnections > max && i != index ){
       max = peer.openConnections;
@@ -73,7 +73,7 @@ app.post('/getNodes',(req,res)=>{
   sendMessage(message);
   res.status(200).send('success');
 }else{
-  console.log("In here, not a new node");
+  //console.log("In here, not a new node");
   var message = {
     data:{
       type:'1',
@@ -96,15 +96,15 @@ app.post('/addDataToList',(req,res)=>{
       }
     });
     nodesOnNetwork.push(peerObject);
-    console.log(nodesOnNetwork);
+    //console.log(nodesOnNetwork);
   }
-  console.log(peerObject);
+//  console.log(peerObject);
   res.status(200).send('success');
 });
 
 app.post('/selectedNode',(req,res)=>{
   var selectedNodeInfo = req.body;
-  console.log(selectedNodeInfo);
+  //console.log(selectedNodeInfo);
     var answerToken = selectedNodeInfo.answerToken;
     var message = {
       data:{
