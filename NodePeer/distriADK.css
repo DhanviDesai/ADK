@@ -2,7 +2,12 @@
 body{
   margin:0;
   padding:0;
-  background-color: #7e7e7e;
+  background-color: #444;
+  font-family: 'Ubuntu', sans-serif;
+}
+
+.statement{
+  color:orange;
 }
 
 #headerInstructions{
@@ -88,7 +93,7 @@ body{
 #runButtonArea{
 }
 
-#codeEditor{
+.original{
   position: absolute;
   width:75%;
   height:50%;
@@ -99,6 +104,25 @@ body{
   background-color: #fff;
   border:none;
   border-radius: 4px;
+}
+
+#codeEditorDummy{
+  color:black;
+}
+#codeEditor{
+  z-index:11;background:transparent;color:transparent;caret-color: black;
+}
+
+.original span.highlighted {
+    color:#8e44ad;
+}
+
+.original span.ownHighlight{
+  color:  #e67e22;
+}
+
+.original span.varHighlight{
+  color: #16a085;
 }
 
 #codeEditor:focus,
