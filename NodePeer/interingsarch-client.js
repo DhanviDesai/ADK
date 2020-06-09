@@ -465,7 +465,7 @@ if(type == '4'){
     directPeersId.forEach((nodeId, i) => {
 
       //Check whether this node is me
-      if(nodeId != myId && nodeId != -1){
+      if(nodeId != myId){
 
         //This is true for only its other connected node
 
