@@ -2,6 +2,8 @@
 
 var rankList = [];
 
+var myRank;
+
 
 //Return the number of processes available
 function size(){
@@ -22,6 +24,7 @@ function rank(){
       rank= i+1;
     }
   });
+  myRank = rank;
   return rank;
 
 }
@@ -68,7 +71,7 @@ function send(obj){
   }
 }
 
-function executeCode(){
+function executeCode(code){
   if(isCodeReceived && isDataReceived){
     childProcess.exec('echo "'+receivedCode+'" > temp1.js');
     require('./temp1.js');
@@ -82,19 +85,17 @@ var isCodeReceived = false;
 var isDataReceived = false;
 
 
-function setReceivedCode(code){
-  receivedCode = code;
-  isCodeReceived = true;
-  if(isCodeReceived && isDataReceived ){
-    executeCode();
-  }
-}
 
-function setReceivedData(data){
-  receivedData = data;
-  isDataReceived = true;
-  if(isCodeReceived && isDataReceived ){
-    executeCode();
+var receivedDatalist = [];
+
+function getReceivedData(data){
+  if(myRank == 0 ){
+    receivedDatalist.push(data);
+    if(receivedDatalist.length == rankList.length){
+      return receivedDatalist;
+    }
+  }else{
+    return data;
   }
 }
 
@@ -107,8 +108,13 @@ function print(something){
     $('#outputProcess').append("<p id='actualOutput'>"+something+"</p");
 }
 
-function recv(obj){
-  return receivedData;
+var index = -1;
+
+//Get data here
+async function recv(obj){
+  var data = await getReceivedData();
+  index++;
+  return data[index];
 }
 
 module.exports = {send,recv,size,rank,print,setReceivedCode,setReceivedData,setRankList};
