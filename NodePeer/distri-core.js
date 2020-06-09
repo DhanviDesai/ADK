@@ -13,7 +13,7 @@ var rootProcessId;
 function size(){
   //Get this from the number of open needed processes available
   //Default is 3
-  return getDirectPeerObjectList().length;
+  return getDirectPeerObjectList().length + 1;
 }
 
 //This is the uid that is assigned to each process that is available
@@ -107,10 +107,11 @@ function send(obj){
 }
 
 function executeCode(code){
-
+setTimeout(() => {
   childProcess.exec('echo "'+code+'" > temp1.js');
   require('./temp1.js');
   delete require.cache[require.resolve('./temp1.js')];
+},800);
 }
 
 var receivedData;
