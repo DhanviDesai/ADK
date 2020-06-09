@@ -117,4 +117,4 @@ async function recv(obj){
   return data[index];
 }
 
-module.exports = {send,recv,size,rank,print,setReceivedCode,getReceivedData,setRankList};
+module.exports = {send,recv,size,rank,print,executeCode,getReceivedData,setRankList};
