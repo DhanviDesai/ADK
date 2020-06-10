@@ -347,7 +347,7 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
       //This is the callback when the two nodes are connected
       peer.on('connect',()=>{
 
-            console.log('connected');
+            console.log('connected with node having id '+selectedNode.id);
 
         //Here I will have to create new OfferToken for this node and send it to the SS
         //console.log('connected with that I selected that time, remember? I told you no');
