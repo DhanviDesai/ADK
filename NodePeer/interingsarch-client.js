@@ -257,10 +257,21 @@ function getMyId(){
   return myId;
 }
 
+function sendOpenConections(peer){
+  var sendingMessage = {
+    type:'6',
+    id:myId,
+    openConnections:openConnections;
+  };
+
+  peer.send(JSON.stringify(sendingMessage));
+
+}
+
 //This does necessary communication with the other nodes to set up the proper data for
 //InterconnectedRings Architecture
 //Called only when a new node is connected to this node
-function doNecessary(incomingId,incomingRegistrationToken){
+function doNecessary(incomingId,incomingRegistrationToken,incomingOpenConnections){
 
   //Increment openConnections to indicate that one slot is closed
   openConnections++;
@@ -274,14 +285,21 @@ function doNecessary(incomingId,incomingRegistrationToken){
   //add this peer object to the list of directPeerObjectList
   directPeerObjectList.push(peer);
 
+  //add this peer's openConnections to my list
+  directPeersOpenConnections[openConnections] = incomingOpenConnections;
+
   console.log('This is directId list '+directId);
   console.log('This is directPeerObjectList '+directPeerObjectList);
+  console.log('This is the directPeersOpenConnections ',directPeersOpenConnections);
 
 
   //send this data to all the directly connected peers
-  directPeerObjectList.forEach((peer, i) => {
     sendStateToPeer(peer);
-  });
+
+    directPeerObjectList.forEach((peer, i) => {
+      sendOpenConections();
+    });
+
 
 }
 
@@ -342,7 +360,7 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
           //closedDirectId:closedDirectId,(removed for now)
           //This node's registration token
           registrationToken:myRegistraionToken,
-          //Selected node's registration token
+          //Selected node's registration tokenitem
           selectedRegistrationToken:selectedNode.registrationToken
         });
       });
@@ -358,7 +376,7 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
         //Communicate the same to the selected direct peer
 
         //Do all the necessary communication to set up InterconnectedRings arch
-        doNecessary(selectedNode.id,selectedNode.registrationToken);
+        doNecessary(selectedNode.id,selectedNode.registrationToken,selectedNode.openConnections);
 
         // Create new peer Object
         // Add this to the list of connected peers
@@ -404,7 +422,8 @@ else if(type == '3'){
     //This is the offerNode another node which is of answerType is connected to this here
 
     //Handles all the communication to set up InterconnectedRings arch
-    doNecessary(serverNotificationPayload.data.id,serverNotificationPayload.data.registrationToken);
+    doNecessary(serverNotificationPayload.data.id,serverNotificationPayload.data.registrationToken
+    ,serverNotificationPayload.data.openConnections);
 
     //console.log('Here this offernode is conneted to a new answer node');
     //console.log('Will generate a new node and make that happen');
@@ -532,6 +551,9 @@ else if(type == '5'){
   console.log('Got message here from '+data.id);
   console.log('This node wants to connect with node '+data.nodeId);
 
+  //Here data.nodeId is the node that wants to connect with the other one
+
+
 }
 
 else if(type == '12'){
@@ -554,6 +576,17 @@ else if(type == '13'){
 else if(type == '15'){
   console.log('Got root processId '+data.data);
   setRootProcessId(data.data);
+}
+
+else if(type == '6'){
+  var mainId = data.id;
+  var index;
+  directId.forEach((id, i) => {
+    if(id == mainId){
+      directPeersOpenConnections[i] = data.openConnections;
+    }
+  });
+
 }
 
 
