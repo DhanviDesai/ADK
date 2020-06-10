@@ -16,4 +16,8 @@ function print(something){
   $('#outputProcess').append("<p id='actualOutput'>"+finalOutput+"</p");
 }
 
-module.exports = { addReceivedProcess,addSentProcess,print }
+function setIdThere(id){
+  $('#headerInstructions').append("<p id='idValue'>My id is "+id+"</p>");
+}
+
+module.exports = { addReceivedProcess,addSentProcess,print,setIdThere }

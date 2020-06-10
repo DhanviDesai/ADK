@@ -12,6 +12,7 @@ const wrtc = require('wrtc');
 var baseUrl = 'https://adk-signallingserver.herokuapp.com';
 
 var { executeCode,setReceivedData,setRankList,setRootProcessId } = require('./distri-core.js');
+var { setIdThere } = require('./handleUi.js');
 
 
 function makePeerObject(initiator){
@@ -106,9 +107,11 @@ var peer;
 Generates random id of length 6
 */
 function IdGenerator (){
-  return Math.floor((2 + Math.random()) * 0x80000000)
+  var id =  Math.floor((2 + Math.random()) * 0x80000000)
       .toString(16)
       .substring(3);
+    setIdThere(id);
+    return id;
 }
 
 function postDataToServer(extension,data){
