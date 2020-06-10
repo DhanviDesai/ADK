@@ -347,6 +347,8 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
       //This is the callback when the two nodes are connected
       peer.on('connect',()=>{
 
+            console.log('connected');
+
         //Here I will have to create new OfferToken for this node and send it to the SS
         //console.log('connected with that I selected that time, remember? I told you no');
         //Update the pointers and values here correctly
@@ -390,6 +392,8 @@ else if(type == '3'){
 
   //Callback for when the nodes are connected
   peer.on('connect',()=>{
+
+    console.log('connected');
 
     //console.log('connect');
     //Also have to check for connection extensions
@@ -464,28 +468,31 @@ if(type == '4'){
     //node's directly connected peers
     directPeersId.forEach((nodeId, i) => {
 
-      //Check whether this node is me
-      if(nodeId != myId){
+      if(nodeId != -1){
 
-        //This is true for only its other connected node
+        //Check whether this node is me
+        if(nodeId != myId){
 
-        //Here I will ask this node to connect me to that node
+          //This is true for only its other connected node
 
-        console.log('I will ask the node to connect me with '+nodeId);
-        var peer = makePeerObject(true);
-        peer.on('signal',(offerToken)=>{
-          //Got the offerToken here to connect with other node,
-          var extendConnectionMessage = {
-            type:'5',
-            id:myId,
-            nodeId:nodeId,
-            offerToken:offerToken,
-          };
+          //Here I will ask this node to connect me to that node
 
-          directPeerObjectList[index].send(JSON.stringify(extendConnectionMessage));
+          console.log('I will ask the node to connect me with '+nodeId);
+          var peer = makePeerObject(true);
+          peer.on('signal',(offerToken)=>{
+            //Got the offerToken here to connect with other node,
+            var extendConnectionMessage = {
+              type:'5',
+              id:myId,
+              nodeId:nodeId,
+              offerToken:offerToken,
+            };
 
-        })
+            directPeerObjectList[index].send(JSON.stringify(extendConnectionMessage));
 
+          })
+
+        }
       }
 
     });

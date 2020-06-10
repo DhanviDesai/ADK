@@ -118,7 +118,6 @@ var isCodeReceived = false;
 var isDataReceived = false;
 var receivedDataList = [];
 
-
 function setReceivedData(data){
   receivedDataList.push(data);
 }
@@ -144,6 +143,7 @@ function recv(obj=undefined,callback){
       recv(obj,callback);
     },300);
   }
+
 }
 
 
