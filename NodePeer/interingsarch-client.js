@@ -274,6 +274,9 @@ function doNecessary(incomingId,incomingRegistrationToken){
   //add this peer object to the list of directPeerObjectList
   directPeerObjectList.push(peer);
 
+  console.log('This is directId list '+directId);
+  console.log('This is directPeerObjectList '+directPeerObjectList);
+
 
   //send this data to all the directly connected peers
   directPeerObjectList.forEach((peer, i) => {
