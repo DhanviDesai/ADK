@@ -137,7 +137,7 @@ function print(something){
 function recv(obj=undefined,callback){
   console.log('This is receivedDataList '+receivedDataList)
   if(receivedDataList.length > 0){
-    return receivedDataList.shift();
+    callback(receivedDataList.shift());
   }else{
     setTimeout(() => {
       recv(obj,callback);
