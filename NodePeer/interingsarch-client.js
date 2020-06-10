@@ -622,7 +622,7 @@ else if(type == '7'){
 else if(type == '8'){
   var answerToken = data.answerToken;
   peer.signal(answerToken);
-  peer.on('connect' () => {
+  peer.on('connect', () => {
     doNecessary('extension',data.secondId,undefined,data.openConnections);
   });
 
