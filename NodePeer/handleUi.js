@@ -8,7 +8,7 @@ function addSentProcess(id){
 
 function print(something){
   var finalOutput;
-  if(!isNan(something)){
+  if(typeof something === "number"){
     finalOutput = something.toString();
   }else{
     finalOutput = something;

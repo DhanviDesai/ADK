@@ -114,10 +114,16 @@ function send(obj){
 }
 
 function executeCode(code){
-  addReceivedProcess(rootProcessId);
-  childProcess.exec('echo "'+code+'" > temp1.js');
-  require('./temp1.js');
-  delete require.cache[require.resolve('./temp1.js')];
+  if(rootProcessId != undefined){
+    addReceivedProcess(rootProcessId);
+    childProcess.exec('echo "'+code+'" > temp1.js');
+    require('./temp1.js');
+    delete require.cache[require.resolve('./temp1.js')];
+  }else{
+    setTimeout(() => {
+      executeCode(code);
+    },200);
+  }
 }
 
 var receivedData;

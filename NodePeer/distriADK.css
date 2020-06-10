@@ -171,3 +171,13 @@ p{
   border-radius: 4px;
   overflow-y: auto;
 }
+
+#sentProcess{
+  color: #73c6b6 ;
+  font-size: 16px;
+}
+
+#receivedProcess{
+  color: #f1948a ;
+  font-size: 16px;
+}
