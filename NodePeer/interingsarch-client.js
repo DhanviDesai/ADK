@@ -466,7 +466,7 @@ if(type == '4'){
 
     //I can start extending my connection by going through the list of my connected
     //node's directly connected peers
-    directPeersId.forEach((nodeId, i) => {
+    directPeers.forEach((nodeId, i) => {
 
       if(nodeId != -1){
 
@@ -477,7 +477,8 @@ if(type == '4'){
 
           //Here I will ask this node to connect me to that node
 
-          console.log('I will ask the node to connect me with '+nodeId);
+          console.log('I will ask the node with id '+id+' to connect me with '+nodeId);
+          console.log('On my directly connected peers list, the node is on this index '+index);
           var peer = makePeerObject(true);
           peer.on('signal',(offerToken)=>{
             //Got the offerToken here to connect with other node,
@@ -488,7 +489,8 @@ if(type == '4'){
               offerToken:offerToken,
             };
 
-            directPeerObjectList[index].send(JSON.stringify(extendConnectionMessage));
+            var peer = directPeerObjectList[index];
+            peer.send(JSON.stringify(extendConnectionMessage));
 
           })
 
