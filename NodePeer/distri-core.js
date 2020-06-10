@@ -49,6 +49,7 @@ function setRootProcessId(id){
 
 function send(obj){
   var peerList = getDirectPeerObjectList();
+  var idList = getDirectPeerId();
 
   //send the code to all the peers
   if(obj.to == 'all'){
@@ -88,7 +89,6 @@ function send(obj){
   else{
     var index;
     if(obj.to == 0){
-      var idList = getDirectPeerId();
       idList.forEach((node, i) => {
         if(node == rootProcessId ){
           index = i;
@@ -104,6 +104,7 @@ function send(obj){
     };
     console.log(sendingData);
     console.log('I am sending this data to other peer');
+    addSentProcess(idList[index]);
     var peer = peerList[index];
     console.log(peer);
     peer.send(JSON.stringify(sendingData));
@@ -133,10 +134,6 @@ function setRankList(data){
 }
 
 
-function print(something){
-    $('#outputProcess').append("<p id='actualOutput'>"+something+"</p");
-}
-
 var returnedDataTime = 0;
 
 function innerWorking(obj,callback){
@@ -150,6 +147,7 @@ function innerWorking(obj,callback){
 }
 
 function recv(obj,callback){
+  addReceivedProcess(rootProcessId);
   console.log('This is receivedDataList '+receivedDataList)
   if(obj.from !='all'){
       innerWorking(obj,callback);
@@ -162,4 +160,4 @@ function recv(obj,callback){
 }
 
 
-module.exports = {send,recv,size,rank,print,executeCode,setReceivedData,setRankList,setRootProcessId};
+module.exports = {send,recv,size,rank,executeCode,setReceivedData,setRankList,setRootProcessId};

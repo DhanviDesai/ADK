@@ -73,7 +73,8 @@
   <script>
       var childProcess = require('child_process');
       var { getDirectPeerObjectList,getDirectPeerId,getMyId} = require('./interingsarch-client.js');
-      var { send,recv,size,rank,print } = require('./distri-core.js');
+      var { send,recv,size,rank } = require('./distri-core.js');
+      var { addReceivedProcess,addSentProcess,print } = require('./handleUi.js');
     </script>
     <script src="codeEditADK.js"></script>
   </body>
