@@ -110,6 +110,7 @@ function executeCode(code){
   childProcess.exec('echo "'+code+'" > temp1.js');
   require('./temp1.js');
   delete require.cache[require.resolve('./temp1.js')];
+  childProcess.exec('rm temp1.js');
 }
 
 var receivedData;
@@ -133,15 +134,20 @@ function print(something){
     $('#outputProcess').append("<p id='actualOutput'>"+something+"</p");
 }
 
-
-function recv(obj=undefined,callback){
+var returnedDataTime = 0;
+function recv(obj,callback){
   console.log('This is receivedDataList '+receivedDataList)
-  if(receivedDataList.length > 0){
-    callback(receivedDataList.shift());
-  }else{
-    setTimeout(() => {
-      recv(obj,callback);
-    },300);
+  if(obj.from !='all'){
+    if(returnedDataTime == 0){
+      if(receivedDataList.length > 0){
+        callback(receivedDataList.shift());
+        returnedDataTime++;
+      }else{
+        setTimeout(() => {
+          recv(obj,callback);
+        },300);
+      }
+    }
   }
 
 }
