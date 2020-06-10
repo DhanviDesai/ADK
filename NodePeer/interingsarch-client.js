@@ -271,7 +271,7 @@ function sendOpenConections(peer){
 //This does necessary communication with the other nodes to set up the proper data for
 //InterconnectedRings Architecture
 //Called only when a new node is connected to this node
-function doNecessary(incomingId,incomingRegistrationToken,incomingOpenConnections){
+function doNecessary(type,incomingId,incomingRegistrationToken,incomingOpenConnections){
 
   //Increment openConnections to indicate that one slot is closed
   openConnections++;
@@ -288,16 +288,20 @@ function doNecessary(incomingId,incomingRegistrationToken,incomingOpenConnection
   //add this peer's openConnections to my list
   directPeersOpenConnections[openConnections] = incomingOpenConnections;
 
+  console.log('This is incomingOpenConnections',incomingOpenConnections);
+
   console.log('This is directId list '+directId);
   console.log('This is directPeerObjectList '+directPeerObjectList);
   console.log('This is the directPeersOpenConnections ',directPeersOpenConnections);
 
 
   //send this data to all the directly connected peers
-    sendStateToPeer(peer);
+  if(type == 'offer'){
+      sendStateToPeer(peer);
+  }
 
     directPeerObjectList.forEach((peer, i) => {
-      sendOpenConections();
+      sendOpenConections(peer);
     });
 
 
@@ -377,7 +381,7 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
         //Communicate the same to the selected direct peer
 
         //Do all the necessary communication to set up InterconnectedRings arch
-        doNecessary(selectedNode.id,selectedNode.registrationToken,selectedNode.openConnections);
+        doNecessary('answer',selectedNode.id,selectedNode.registrationToken,selectedNode.openConnections);
 
         // Create new peer Object
         // Add this to the list of connected peers
@@ -423,7 +427,7 @@ else if(type == '3'){
     //This is the offerNode another node which is of answerType is connected to this here
 
     //Handles all the communication to set up InterconnectedRings arch
-    doNecessary(serverNotificationPayload.data.id,serverNotificationPayload.data.registrationToken
+    doNecessary('offer',serverNotificationPayload.data.id,serverNotificationPayload.data.registrationToken
     ,serverNotificationPayload.data.openConnections);
 
     //console.log('Here this offernode is conneted to a new answer node');
@@ -587,6 +591,8 @@ else if(type == '6'){
       directPeersOpenConnections[i] = data.openConnections;
     }
   });
+
+  console.log('This is the updated openConnections',directPeersOpenConnections);
 
 }
 
