@@ -466,7 +466,7 @@ if(type == '4'){
 
     //I can start extending my connection by going through the list of my connected
     //node's directly connected peers
-    directPeers.forEach((nodeId, i) => {
+    directPeersId.forEach((nodeId, i) => {
 
       if(nodeId != -1){
 
