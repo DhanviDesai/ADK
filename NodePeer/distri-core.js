@@ -156,7 +156,7 @@ function innerWorking(obj,callback){
 }
 
 function recv(obj,callback){
-  console.log('This is receivedDataList '+receivedDataList)
+///  console.log('This is receivedDataList '+receivedDataList)
   if(obj.from !='all'){
       innerWorking(obj,callback);
   }
