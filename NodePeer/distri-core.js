@@ -104,7 +104,9 @@ function send(obj){
     };
     console.log(sendingData);
     console.log('I am sending this data to other peer');
-    addSentProcess(idList[index]);
+    if(myRank == 0){
+      addSentProcess(idList[index]);
+    }
     var peer = peerList[index];
     console.log(peer);
     peer.send(JSON.stringify(sendingData));
@@ -112,6 +114,7 @@ function send(obj){
 }
 
 function executeCode(code){
+  addReceivedProcess(rootProcessId);
   childProcess.exec('echo "'+code+'" > temp1.js');
   require('./temp1.js');
   delete require.cache[require.resolve('./temp1.js')];
@@ -147,7 +150,6 @@ function innerWorking(obj,callback){
 }
 
 function recv(obj,callback){
-  addReceivedProcess(rootProcessId);
   console.log('This is receivedDataList '+receivedDataList)
   if(obj.from !='all'){
       innerWorking(obj,callback);
