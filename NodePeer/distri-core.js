@@ -8,6 +8,8 @@ var myId;
 
 var rootProcessId;
 
+var peerList;
+
 
 //Return the number of processes available
 function size(){
@@ -29,6 +31,8 @@ function rank(){
     }
   });
   myRank = rank;
+
+  peerList = getDirectPeerObjectList();
 
   if(myRank == 0){
     send({to:'allId',data:id});
@@ -110,7 +114,6 @@ function executeCode(code){
   childProcess.exec('echo "'+code+'" > temp1.js');
   require('./temp1.js');
   delete require.cache[require.resolve('./temp1.js')];
-  childProcess.exec('rm temp1.js');
 }
 
 var receivedData;
@@ -136,10 +139,9 @@ function print(something){
 
 var returnedDataTime = 0;
 
-function innerWorking(){
+function innerWorking(obj,callback){
   if(receivedDataList.length > 0){
     callback(receivedDataList.shift());
-    returnedDataTime++;
   }else{
     setTimeout(() => {
       recv(obj,callback);
@@ -150,13 +152,11 @@ function innerWorking(){
 function recv(obj,callback){
   console.log('This is receivedDataList '+receivedDataList)
   if(obj.from !='all'){
-    if(returnedDataTime == 0){
-      innerWorking();
-    }
+      innerWorking(obj,callback);
   }
   else{
     if(returnedDataTime < peerList.length){
-      innerWorking();
+      innerWorking(obj,callback);
     }
   }
 }
