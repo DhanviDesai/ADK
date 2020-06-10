@@ -135,21 +135,30 @@ function print(something){
 }
 
 var returnedDataTime = 0;
+
+function innerWorking(){
+  if(receivedDataList.length > 0){
+    callback(receivedDataList.shift());
+    returnedDataTime++;
+  }else{
+    setTimeout(() => {
+      recv(obj,callback);
+    },300);
+  }
+}
+
 function recv(obj,callback){
   console.log('This is receivedDataList '+receivedDataList)
   if(obj.from !='all'){
     if(returnedDataTime == 0){
-      if(receivedDataList.length > 0){
-        callback(receivedDataList.shift());
-        returnedDataTime++;
-      }else{
-        setTimeout(() => {
-          recv(obj,callback);
-        },300);
-      }
+      innerWorking();
     }
   }
-
+  else{
+    if(returnedDataTime < peerList.length){
+      innerWorking();
+    }
+  }
 }
 
 
