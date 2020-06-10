@@ -511,7 +511,7 @@ if(type == '4'){
 
           console.log('I will ask the node with id '+mainId+' to connect me with '+nodeId);
           console.log('On my directly connected peers list, the node is on this index '+index);
-          var peer = makePeerObject(true);
+          peer = makePeerObject(true);
           peer.on('signal',(offerToken)=>{
             //Got the offerToken here to connect with other node,
             var extendConnectionMessage = {
@@ -521,8 +521,7 @@ if(type == '4'){
               offerToken:offerToken,
             };
 
-            var peer = directPeerObjectList[index];
-            peer.send(JSON.stringify(extendConnectionMessage));
+            directPeerObjectList[index].send(JSON.stringify(extendConnectionMessage));
 
           })
 
@@ -556,9 +555,80 @@ else if(type == '5'){
   console.log('Got message here from '+data.id);
   console.log('This node wants to connect with node '+data.nodeId);
 
-  //Here data.nodeId is the node that wants to connect with the other one
+  //Here data.id is the node that wants to connect with the node with id data.nodeId
+  directId.forEach((id, i) => {
+    if(id == data.nodeId){
+      var extensionMessage = {
+        type:'7',
+        id:myId,
+        secondId:data.id,
+        offerToken:data.offerToken,
+        openConnections:openConnections
+      };
+      directPeerObjectList[i].send(JSON.stringify(extensionMessage));
+    }
+
+  });
 
 
+}
+else if(type == '6'){
+  var mainId = data.id;
+  var index;
+  directId.forEach((id, i) => {
+    if(id == mainId){
+      directPeersOpenConnections[i] = data.openConnections;
+    }
+  });
+
+  console.log('This is the updated openConnections',directPeersOpenConnections);
+
+}
+
+else if(type == '7'){
+  var offerToken = data.offerToken;
+  peer = makePeerObject(false);
+  peer.signal(offerToken);
+  peer.on('signal',(answerToken) => {
+    var extensionConnectionMessage = {
+      type:'8',
+      answerToken:answerToken,
+      id:myId,
+      secondId:data.secondId,
+      openConnections:openConnections
+    };
+
+    var mediateId = data.id;
+
+    directId.forEach((id, i) => {
+      if(id == mediateId){
+        directPeerObjectList[i].send(JSON.stringify(extendConnectionMessage));
+      }
+    });
+
+
+  });
+
+  peer.on('connect',() => {
+    //type,id,registrationToken,openConnections
+    doNecessary('extension',data.secondId,undefined,data.openConnections);
+  });
+
+  peer.on('data',(data) => {
+    handleIncomingData(JSON.parse(data));
+  })
+}
+
+else if(type == '8'){
+  var answerToken = data.answerToken;
+  peer.signal(answerToken);
+  peer.on('connect' () => {
+    doNecessary('extension',data.secondId,undefined,data.openConnections);
+  });
+
+  peer.on('data', (data) => {
+    handleIncomingData(JSON.parse(data));
+  });
 }
 
 else if(type == '12'){
@@ -583,18 +653,7 @@ else if(type == '15'){
   setRootProcessId(data.data);
 }
 
-else if(type == '6'){
-  var mainId = data.id;
-  var index;
-  directId.forEach((id, i) => {
-    if(id == mainId){
-      directPeersOpenConnections[i] = data.openConnections;
-    }
-  });
 
-  console.log('This is the updated openConnections',directPeersOpenConnections);
-
-}
 
 
 }
