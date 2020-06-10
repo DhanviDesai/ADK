@@ -107,11 +107,9 @@ function send(obj){
 }
 
 function executeCode(code){
-setTimeout(() => {
   childProcess.exec('echo "'+code+'" > temp1.js');
   require('./temp1.js');
   delete require.cache[require.resolve('./temp1.js')];
-},800);
 }
 
 var receivedData;
@@ -121,11 +119,8 @@ var isDataReceived = false;
 var receivedDataList = [];
 
 
-async function setReceivedData(data){
-  if(data != undefined){
-    receivedDataList.push(data);
-    return true;
-  }
+function setReceivedData(data){
+  receivedDataList.push(data);
 }
 
 
@@ -140,17 +135,15 @@ function print(something){
 }
 
 
-async function recv(obj){
+function recv(obj=undefined,callback){
   console.log('This is receivedDataList '+receivedDataList)
   if(receivedDataList.length > 0){
     return receivedDataList.shift();
   }else{
-    let result = await setReceivedData();
-    if(result){
-      return receivedDataList.shift();
-    }
+    setTimeout(() => {
+      recv(obj,callback);
+    },300);
   }
-
 }
 
 
