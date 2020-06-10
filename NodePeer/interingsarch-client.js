@@ -393,7 +393,7 @@ else if(type == '3'){
   //Callback for when the nodes are connected
   peer.on('connect',()=>{
 
-    console.log('connected with node having id '+selectedNode.id);
+    console.log('connected with node having id '+serverNotificationPayload.data.id);
 
     //console.log('connect');
     //Also have to check for connection extensions
