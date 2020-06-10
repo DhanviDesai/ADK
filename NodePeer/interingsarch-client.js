@@ -449,19 +449,21 @@ if(type == '4'){
   console.log(data);
 
   //Get the id of the node that sent this message
-  var id = data.id;
+  var mainId = data.id;
 
   //Get the index of this node
   var index;
   directId.forEach((node, i) => {
-    if(node.id == id){
+    if(node == mainId){
       index = i;
     };
   });
 
+  console.log('If I had to send this message, I would send it to '+directPeerObjectList[index]);
+
 
   //Get the list of all directly connected peers from the node that sent the message
-  var directPeersId = data.directId;
+  var incomingDirectPeersId = data.directId;
 
   //Get the value of openConnections the node that sent the message has
   var mainOpenConnections = data.mainOpenConnections;
@@ -472,7 +474,7 @@ if(type == '4'){
 
     //I can start extending my connection by going through the list of my connected
     //node's directly connected peers
-    directPeersId.forEach((nodeId, i) => {
+    incomingDirectPeersId.forEach((nodeId, i) => {
 
       if(nodeId != -1){
 
@@ -483,7 +485,7 @@ if(type == '4'){
 
           //Here I will ask this node to connect me to that node
 
-          console.log('I will ask the node with id '+id+' to connect me with '+nodeId);
+          console.log('I will ask the node with id '+mainId+' to connect me with '+nodeId);
           console.log('On my directly connected peers list, the node is on this index '+index);
           var peer = makePeerObject(true);
           peer.on('signal',(offerToken)=>{
