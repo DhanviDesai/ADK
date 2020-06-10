@@ -111,7 +111,8 @@ app.post('/selectedNode',(req,res)=>{
         type:'3',
         answerToken:JSON.stringify(answerToken),
         id:selectedNodeInfo.id,
-        registrationToken:selectedNodeInfo.registrationToken
+        registrationToken:selectedNodeInfo.registrationToken,
+        openConnections:selectedNodeInfo.openConnections
       },
       token:selectedNodeInfo.selectedRegistrationToken
     };

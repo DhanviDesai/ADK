@@ -261,7 +261,7 @@ function sendOpenConections(peer){
   var sendingMessage = {
     type:'6',
     id:myId,
-    openConnections:openConnections;
+    openConnections:openConnections
   };
 
   peer.send(JSON.stringify(sendingMessage));
@@ -360,6 +360,7 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
           //closedDirectId:closedDirectId,(removed for now)
           //This node's registration token
           registrationToken:myRegistraionToken,
+          openConnections:openConnections,
           //Selected node's registration tokenitem
           selectedRegistrationToken:selectedNode.registrationToken
         });
