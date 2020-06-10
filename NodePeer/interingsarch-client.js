@@ -442,6 +442,9 @@ var type = data.type;
 //This condition is for receiving the direct peers from the connected peers
 if(type == '4'){
 
+  console.log('Got this data from the peer');
+  console.log(data);
+
   //Get the id of the node that sent this message
   var id = data.id;
 
