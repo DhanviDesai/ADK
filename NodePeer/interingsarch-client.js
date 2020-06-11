@@ -312,11 +312,14 @@ function doNecessary(type,incomingId,incomingRegistrationToken,incomingOpenConne
 //      sendStateToPeer(peer);
   }
 
-  directId.forEach((id, i) => {
+/*  directId.forEach((id, i) => {
     getThePeer(id,(peer) => {
     //  sendOpenConections(peer);
     });
   });
+  */
+
+  checkNewOfferNodeHandler();
 
 
 }
