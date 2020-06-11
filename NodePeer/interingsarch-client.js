@@ -270,13 +270,19 @@ function getMyId(){
 }
 
 function sendOpenConections(peer){
-  var sendingMessage = {
-    type:'6',
-    id:myId,
-    openConnections:openConnections
-  };
+  if(isConnected){
+    var sendingMessage = {
+      type:'6',
+      id:myId,
+      openConnections:openConnections
+    };
 
-  peer.send(JSON.stringify(sendingMessage));
+    peer.send(JSON.stringify(sendingMessage));
+  }else{
+    setTimeout(() => {
+      sendOpenConections(peer);
+    },200);
+  }
 
 }
 
@@ -297,6 +303,9 @@ function doNecessary(type,incomingId,incomingRegistrationToken,incomingOpenConne
   //add this peer object to the list of directPeerObjectList
   directPeerObjectList.push(peer);
 
+
+  connectedToNode(incomingId);
+
   //add this peer's openConnections to my list
   //directPeersOpenConnections[openConnections] = incomingOpenConnections;
 
@@ -313,7 +322,6 @@ function doNecessary(type,incomingId,incomingRegistrationToken,incomingOpenConne
       sendOpenConections(peer);
     });
 
-    connectedToNode(incomingId);
 }
 
 
