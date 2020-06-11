@@ -270,19 +270,12 @@ function getMyId(){
 }
 
 function sendOpenConections(peer){
-  if(isConnected){
     var sendingMessage = {
       type:'6',
       id:myId,
       openConnections:openConnections
     };
-
     peer.send(JSON.stringify(sendingMessage));
-  }else{
-    setTimeout(() => {
-      sendOpenConections(peer);
-    },200);
-  }
 
 }
 
@@ -318,9 +311,13 @@ function doNecessary(type,incomingId,incomingRegistrationToken,incomingOpenConne
   if(type == 'offer'){
       sendStateToPeer(peer);
   }
-    directPeerObjectList.forEach((peer, i) => {
+
+  directId.forEach((id, i) => {
+    getThePeer(id,(peer) => {
       sendOpenConections(peer);
     });
+  });
+
 
 }
 
@@ -470,12 +467,17 @@ else if(type == '3'){
 
 });
 
+var isOpen = false;
+
 function getThePeer(incomingId,callback){
   var index;
-  if(isConnected){
+  if(isConnected && isOpen){
     directId.forEach((id, i) => {
       if(id == incomingId){
-        callback(directPeerObjectList[i]);
+        if(directPeerObjectList[i].readyState == 'open'){
+          isOpen = true;
+          callback(directPeerObjectList[i]);
+        }
       }
     });
   }else{
