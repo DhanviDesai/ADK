@@ -177,38 +177,41 @@ console.log('Sending token to backend');
 
 function newOfferNodeHandler(){
 
-  console.log('I generated a new node and sent it to SS');
+  if(openConnections < 2){
 
-  console.log('peer var now points to offer');
+    console.log('I generated a new node and sent it to SS');
 
-  //Makes a new offerType node
-  peer = makePeerObject(true);
+    console.log('peer var now points to offer');
 
-  //Callback for generating an offerToken
-  peer.on('signal',(offerToken)=>{
+    //Makes a new offerType node
+    peer = makePeerObject(true);
 
-    //console.log('Generated a new offerToken');
+    //Callback for generating an offerToken
+    peer.on('signal',(offerToken)=>{
 
-    //This is the currently generated offerToken
-    myCurrentValidOfferToken = offerToken;
+      //console.log('Generated a new offerToken');
 
-    //Send this object to SS to keep track of it
-    var peerObject = {
-      //this node's uid
-      id:myId,
-      //this node's registration token needed by SS to send notifications
-      registrationToken:myRegistraionToken,
-      //this node's offerToken that is sent to SS to spread it
-      offerToken:myCurrentValidOfferToken,
-      //Amount of openConnections this node has
-      openConnections:openConnections,
-    };
+      //This is the currently generated offerToken
+      myCurrentValidOfferToken = offerToken;
 
-    //send this data to server
-    postDataToServer('addDataToList',peerObject);
+      //Send this object to SS to keep track of it
+      var peerObject = {
+        //this node's uid
+        id:myId,
+        //this node's registration token needed by SS to send notifications
+        registrationToken:myRegistraionToken,
+        //this node's offerToken that is sent to SS to spread it
+        offerToken:myCurrentValidOfferToken,
+        //Amount of openConnections this node has
+        openConnections:openConnections,
+      };
 
-  });
+      //send this data to server
+      postDataToServer('addDataToList',peerObject);
 
+    });
+
+  }
 }
 
 //This function sends this peer's state to its direct peers for InterconnectedRings arch establishment
@@ -273,7 +276,7 @@ function doNecessary(type,incomingId,incomingRegistrationToken,incomingOpenConne
   openConnections++;
 
   //set the id of the newly connected node in the list of directly connected nodes Id list
-  directId[openConnections] = incomingId;
+  //directId[openConnections] = incomingId;
 
   //set the registration token of newly connected node in the list of directPeers registrationToken
   directPeers[openConnections] = incomingRegistrationToken;
