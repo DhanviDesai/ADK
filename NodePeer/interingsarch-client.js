@@ -374,7 +374,7 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
         //console.log('This is from an answerNode that connected to an offerNode');
 
         //Handles the workin of creating, setting up and saving it in SS
-        newOfferNodeHandler();
+        //newOfferNodeHandler();
 
       });
 
@@ -419,7 +419,7 @@ else if(type == '3'){
     //console.log('Here this offernode is conneted to a new answer node');
     //console.log('Will generate a new node and make that happen');
 
-    newOfferNodeHandler();
+    //newOfferNodeHandler();
 
   });
 
@@ -438,6 +438,8 @@ else if(type == '3'){
 
 });
 
+var getNewNode = false;
+
 function handleIncomingData(data){
 
 //Here check whether they have connections.
@@ -453,6 +455,8 @@ function handleIncomingData(data){
 var type = data.type;
 
 //This condition is for receiving the direct peers from the connected peers
+
+//This will be given only by the offerNode
 if(type == '4'){
 
   console.log('Got this data from the peer');
@@ -460,6 +464,7 @@ if(type == '4'){
 
   //Get the id of the node that sent this message
   var mainId = data.id;
+
 
   //Get the index of this node
   var index;
@@ -493,6 +498,10 @@ if(type == '4'){
 
           //Here I will ask this node to connect me to that node
 
+          getNewNode = true;
+
+          console.log('I am trying to connect with node '+nodeId);
+
           peer = makePeerObject(true);
           peer.on('signal',(offerToken)=>{
             //Got the offerToken here to connect with other node,
@@ -504,9 +513,18 @@ if(type == '4'){
             };
             directPeerObjectList[index].send(JSON.stringify(extendConnectionMessage));
           });
+
         }
       }
     });
+
+    if(!getNewNode){
+      var message = {
+        type:'noNeed',
+      };
+      directPeerObjectList[index].send(JSON.stringify(message));
+      newOfferNodeHandler();
+    }
 
   }
 
@@ -629,6 +647,10 @@ else if(type == '13'){
 else if(type == '15'){
   //console.log('Got root processId '+data.data);
   setRootProcessId(data.data);
+}
+
+else if(type == 'noNeed'){
+  newOfferNodeHandler();
 }
 
 
