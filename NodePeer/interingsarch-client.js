@@ -599,10 +599,6 @@ else if(type == '5'){
       });
     }
 
-  });
-
-
-}
 else if(type == '6'){
   var mainId = data.id;
   var index;
