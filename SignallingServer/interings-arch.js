@@ -63,6 +63,7 @@ app.post('/getNodes',(req,res)=>{
     }
   });
   var selectedNode = nodesOnNetwork[index];
+  nodesOnNetwork.splice(index,1);
   var message = {
     data:{
       type:'2',

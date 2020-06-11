@@ -521,7 +521,7 @@ if(type == '4'){
               offerToken:offerToken,
             };
             while(directPeerObjectList[index] == undefined){
-              console.log('Simply here waiting');
+              console.log('Simply here waiting sending what I want');
             }
             directPeerObjectList[index].send(JSON.stringify(extendConnectionMessage));
           });
@@ -535,6 +535,9 @@ if(type == '4'){
         type:'noNeed',
       };
       console.log('I cant connect with anybody');
+      while(directPeerObjectList[index] == undefined){
+        console.log('Waiting here in sending no need');
+      }
       directPeerObjectList[index].send(JSON.stringify(message));
       newOfferNodeHandler();
     }
@@ -574,6 +577,9 @@ else if(type == '5'){
         offerToken:data.offerToken,
         openConnections:openConnections
       };
+      while(directPeerObjectList[i] == undefined){
+        console.log('Waiting here in type 5');
+      }
       directPeerObjectList[i].send(JSON.stringify(extensionMessage));
     }
 
@@ -586,6 +592,9 @@ else if(type == '6'){
   var index;
   directId.forEach((id, i) => {
     if(id == mainId){
+      while(directPeerObjectList[i] == undefined){
+        console.log('waiting here in 6');
+      }
       directPeersOpenConnections[i] = data.openConnections;
     }
   });
@@ -611,6 +620,9 @@ else if(type == '7'){
 
     directId.forEach((id, i) => {
       if(id == mediateId){
+        while(directPeerObjectList[i] == undefined){
+          console.log('waiting here in type 7');
+        }
         directPeerObjectList[i].send(JSON.stringify(extendConnectionMessage));
       }
     });
