@@ -520,6 +520,9 @@ if(type == '4'){
               nodeId:nodeId,
               offerToken:offerToken,
             };
+            while(directPeerObjectList[index] == undefined){
+              console.log('Simply here waiting');
+            }
             directPeerObjectList[index].send(JSON.stringify(extendConnectionMessage));
           });
 
