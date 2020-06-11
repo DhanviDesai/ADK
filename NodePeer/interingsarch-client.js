@@ -179,6 +179,8 @@ function newOfferNodeHandler(){
 
   console.log('I generated a new node and sent it to SS');
 
+  console.log('peer var now points to offer');
+
   //Makes a new offerType node
   peer = makePeerObject(true);
 
@@ -325,6 +327,8 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
       var selectedNode = JSON.parse(serverNotificationPayload.data.selectedNode);
 
       //Here an answer node is created
+
+      console.log('peer var now points to answerToken');
       peer = makePeerObject(false);
 
       //console.log('I selected this node, okay no? '+JSON.stringify(selectedNode));
