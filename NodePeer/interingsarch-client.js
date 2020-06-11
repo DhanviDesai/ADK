@@ -177,6 +177,8 @@ console.log('Sending token to backend');
 
 function newOfferNodeHandler(){
 
+  console.log('I generated a new node and sent it to SS');
+
   //Makes a new offerType node
   peer = makePeerObject(true);
 
@@ -522,6 +524,7 @@ if(type == '4'){
       var message = {
         type:'noNeed',
       };
+      console.log('I cant connect with anybody');
       directPeerObjectList[index].send(JSON.stringify(message));
       newOfferNodeHandler();
     }
