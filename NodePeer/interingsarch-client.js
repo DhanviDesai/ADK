@@ -114,6 +114,8 @@ function IdGenerator (){
     return id;
 }
 
+var isConnected = false;
+
 function postDataToServer(extension,data){
 
   $.post(baseUrl+'/'+extension,data,()=>{
@@ -369,6 +371,7 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
       peer.on('connect',()=>{
 
             console.log('connected with node having id '+selectedNode.id);
+            isConnected = true;
 
         //Here I will have to create new OfferToken for this node and send it to the SS
         //console.log('connected with that I selected that time, remember? I told you no');
@@ -415,6 +418,7 @@ else if(type == '3'){
   peer.on('connect',()=>{
 
     console.log('connected with node having id '+serverNotificationPayload.data.id);
+    isConnected = true;
 
     //console.log('connect');
     //Also have to check for connection extensions
@@ -447,6 +451,21 @@ else if(type == '3'){
 
 });
 
+function getThePeer(incomingId,callback){
+  var index;
+  if(isConnected){
+    directId.forEach((id, i) => {
+      if(id == incomingId){
+        callback(directPeerObjectList[i]);
+      }
+    });
+  }else{
+    setTimeout(() => {
+      getThePeer(incomingId,callback);
+    },200);
+  }
+}
+
 var getNewNode = false;
 
 function handleIncomingData(data){
@@ -476,12 +495,14 @@ if(type == '4'){
 
 
   //Get the index of this node
+/*
   var index;
   directId.forEach((node, i) => {
     if(node == mainId){
       index = i;
     };
   });
+  */
 
 
   //Get the list of all directly connected peers from the node that sent the message
@@ -520,7 +541,9 @@ if(type == '4'){
               nodeId:nodeId,
               offerToken:offerToken,
             };
-            directPeerObjectList[index].send(JSON.stringify(extendConnectionMessage));
+            getThePeer(mainId,(sendingPeer) => {
+              sendingPeer.send(JSON.stringify(extendConnectionMessage));
+            });
           });
 
         }
@@ -532,7 +555,9 @@ if(type == '4'){
         type:'noNeed',
       };
       console.log('I cant connect with anybody');
-      directPeerObjectList[index].send(JSON.stringify(message));
+      getThePeer(mainId,(sendingPeer) => {
+        sendingPeer.send(JSON.stringify(message));
+      })
       newOfferNodeHandler();
     }
 
@@ -562,8 +587,6 @@ else if(type == '5'){
   console.log('This node wants to connect with node '+data.nodeId);
 
   //Here data.id is the node that wants to connect with the node with id data.nodeId
-  directId.forEach((id, i) => {
-    if(id == data.nodeId){
       var extensionMessage = {
         type:'7',
         id:myId,
@@ -571,7 +594,9 @@ else if(type == '5'){
         offerToken:data.offerToken,
         openConnections:openConnections
       };
-      directPeerObjectList[i].send(JSON.stringify(extensionMessage));
+      getThePeer(data.id,(sendingPeer) => {
+        sendingPeer.send(JSON.stringify(extensionMessage));
+      });
     }
 
   });
@@ -606,17 +631,15 @@ else if(type == '7'){
 
     var mediateId = data.id;
 
-    directId.forEach((id, i) => {
-      if(id == mediateId){
-        directPeerObjectList[i].send(JSON.stringify(extendConnectionMessage));
-      }
+    getThePeer(mediateId,(sendingPeer) => {
+      sendingPeer.send(JSON.stringify(extensionConnectionMessage));
     });
-
 
   });
 
   peer.on('connect',() => {
     //type,id,registrationToken,openConnections
+    isConnected = true;
     doNecessary('extension',data.secondId,undefined,data.openConnections);
   });
 
@@ -629,6 +652,7 @@ else if(type == '8'){
   var answerToken = data.answerToken;
   peer.signal(answerToken);
   peer.on('connect', () => {
+    isConnected = true;
     doNecessary('extension',data.secondId,undefined,data.openConnections);
   });
 
