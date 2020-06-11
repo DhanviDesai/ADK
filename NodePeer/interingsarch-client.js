@@ -541,8 +541,6 @@ if(type == '4'){
 
           getNewNode = true;
 
-          console.log('I am trying to connect with node '+nodeId);
-
           peer = makePeerObject(true);
           peer.on('signal',(offerToken)=>{
             //Got the offerToken here to connect with other node,
@@ -553,6 +551,7 @@ if(type == '4'){
               offerToken:offerToken,
             };
             getThePeer(mainId,(sendingPeer) => {
+              console.log('I am trying to connect with node '+nodeId);
               sendingPeer.send(JSON.stringify(extendConnectionMessage));
             });
           });
@@ -565,10 +564,10 @@ if(type == '4'){
       var message = {
         type:'noNeed',
       };
-      console.log('I cant connect with anybody');
       getThePeer(mainId,(sendingPeer) => {
+        console.log('I cant connect with anybody');
         sendingPeer.send(JSON.stringify(message));
-      })
+      });
       checkNewOfferNodeHandler();
     }
 
