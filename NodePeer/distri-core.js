@@ -140,8 +140,10 @@ function setRankList(data){
 var returnedDataTime = 0;
 
 function innerWorking(obj,callback){
-  if(receivedDataList.length > 0){
-    callback(receivedDataList.shift());
+  if(obj.from != 'all'){
+    if(receivedDataList.length > 0){
+      callback(receivedDataList.shift());
+    }
   }else{
     setTimeout(() => {
       recv(obj,callback);
@@ -152,11 +154,21 @@ function innerWorking(obj,callback){
 function recv(obj,callback){
 ///  console.log('This is receivedDataList '+receivedDataList)
   if(obj.from !='all'){
-      innerWorking(obj,callback);
+    if(receivedDataList.length > 0){
+      callback(receivedDataList.shift());
+    }else{
+      setTimeout(() => {
+        recv(obj,callback);
+      },300);
+    }
   }
   else{
-    if(returnedDataTime < peerList.length){
-      innerWorking(obj,callback);
+    if(receivedDataList == peerList.length){
+      callback(receivedDataList);
+    }else{
+      setTimeout(() => {
+        recv(obj,callback);
+      },300);
     }
   }
 }
