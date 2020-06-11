@@ -276,7 +276,7 @@ function doNecessary(type,incomingId,incomingRegistrationToken,incomingOpenConne
   openConnections++;
 
   //set the id of the newly connected node in the list of directly connected nodes Id list
-  //directId[openConnections] = incomingId;
+  directId[openConnections] = incomingId;
 
   //set the registration token of newly connected node in the list of directPeers registrationToken
   directPeers[openConnections] = incomingRegistrationToken;
@@ -285,12 +285,12 @@ function doNecessary(type,incomingId,incomingRegistrationToken,incomingOpenConne
   directPeerObjectList.push(peer);
 
   //add this peer's openConnections to my list
-  directPeersOpenConnections[openConnections] = incomingOpenConnections;
+  //directPeersOpenConnections[openConnections] = incomingOpenConnections;
 
   console.log('This is incomingOpenConnections',incomingOpenConnections);
   console.log('This is directId list '+directId);
   console.log('This is directPeerObjectList '+directPeerObjectList);
-  console.log('This is the directPeersOpenConnections ',directPeersOpenConnections);
+  //console.log('This is the directPeersOpenConnections ',directPeersOpenConnections);
 
   //send this data to all the directly connected peers
   if(type == 'offer'){
