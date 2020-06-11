@@ -50,7 +50,6 @@ function setRootProcessId(id){
 function send(obj){
   var peerList = getDirectPeerObjectList();
   var idList = getDirectPeerId();
-
   //send the code to all the peers
   if(obj.to == 'all'){
     var codeData = {
@@ -61,9 +60,7 @@ function send(obj){
     peerList.forEach((peer, i) => {
       peer.send(JSON.stringify(codeData));
     });
-
   }
-
   else if(obj.to == 'allRank'){
     var rankData = {
       type:'13',
@@ -72,9 +69,7 @@ function send(obj){
     peerList.forEach((peer, i) => {
       peer.send(JSON.stringify(rankData));
     });
-
   }
-
   else if(obj.to == 'allId'){
     var idData = {
       type:'15',
@@ -84,7 +79,6 @@ function send(obj){
       peer.send(JSON.stringify(idData));
     });
   }
-
   //send the data intended to send by the programmer
   else{
     var index;

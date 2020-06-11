@@ -55,7 +55,7 @@ app.post('/getNodes',(req,res)=>{
   var index = -1;
   //Select one random node from the list
   if( nodesOnNetwork.length > 0 ){
-  console.log("In here, new node");
+  console.log("In here,not a new node");
   nodesOnNetwork.forEach((peer, i) => {
     if( peer.openConnections > max && i != index ){
       max = peer.openConnections;
@@ -73,7 +73,7 @@ app.post('/getNodes',(req,res)=>{
   sendMessage(message);
   res.status(200).send('success');
 }else{
-  console.log("In here, not a new node");
+  console.log("In here, new node");
   var message = {
     data:{
       type:'1',

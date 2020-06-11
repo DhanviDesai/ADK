@@ -2,26 +2,215 @@
 body{
   margin:0;
   padding:0;
-  background-color: #444;
-  font-family: 'Ubuntu', sans-serif;
+  background-color: #f8f8f8;
+  font-family: 'Raleway', sans-serif;
 }
 
 .statement{
   color:orange;
 }
 
-#headerInstructions{
+.blocks{
+  box-shadow: 4px 4px #e7e7e7
+}
+
+.heading{
+  text-align: center;
+  border-bottom:1px solid #1c2833;
+  position: sticky;
+}
+
+#codeEditorArea{
   position: absolute;
+  width: 60%;
+  height:35%;
+  overflow: hidden;
+  background-color: #fff;
+  border-radius: 4px;
+  margin-left:48px;
+  margin-top: 7%;
+  overflow-y: auto;
+}
+
+
+.original{
+  position: fixed;
+  width: 60%;
+  box-shadow: 4px 4px #e7e7e7;
+  height: 35%;
+  resize: none;
+  background-color: #fff;
+  border:none;
+  font-family: 'Montserrat';
+  overflow-y: auto;
+}
+
+.writtenStuffInside{
+  padding: 8px;
+}
+
+#codeEditorDummy{
+font-family: 'Montserrat';
+  color: black;
+}
+#codeEditor{
+font-family: 'Montserrat';
+  z-index:11;background:transparent;color:transparent;caret-color: black;
+}
+
+.original span.highlighted {
+    color:#8e44ad;
+}
+
+.original span.ownHighlight{
+  color:  #e67e22;
+}
+
+.original span.varHighlight{
+  color: #16a085;
+}
+
+#codeEditor:focus,
+#codeEditor:active:focus,
+#codeEditor.active:focus,
+#codeEditor.focus,
+#codeEditor:active.focus,
+#codeEditor.active.focus {
+  outline: none !important;
+}
+
+#showInternalProcess{
+  position: absolute;
+  height: 30%;
+  width: 25%;
+  left: 0;
+  margin-bottom: 24px;
+  margin-left: 6%;
+  background-color: #fff;
+  bottom:0;
+  border-radius: 4px;
+  overflow-y: auto;
+}
+
+#showExternalProcess{
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  margin-bottom: 24px;
+  width: 22%;
+  height: 30%;
+  margin-right: 40%;
+  margin-left: 48px;
+  background-color: #fff;
+  border-radius: 4px;
+  overflow-y: auto;
+
+}
+
+
+#outputProcess{
+  position: absolute;
+  height: 48%;
+  right: 0;
+  margin-right: 48px;
+  width: 23%;
+  background-color: #fff;
+  top: 0;
+  margin-top: 7%;
+  border-radius: 4px;
+  overflow-y: auto;
+}
+
+
+#runButton{
+  background-color: #2ecc71   ;
+  border: none;
+  position: absolute;
+  padding-bottom: 8px;
+  padding-top: 8px;
+  padding-left: 16px;
+  padding-right: 16px;
+  top:0;
+  left:65%;
+  margin-top: 150px;
+  border-radius: 4px;
+}
+
+#saveButton{
+  background-color: #85c1e9  ;
+  border: none;
+  position: absolute;
+  padding-bottom: 8px;
+  padding-top: 8px;
+  padding-left: 16px;
+  padding-right: 16px;
+  top:0;
+  left:65%;
+  margin-top: 200px;
+  border-radius: 4px;
+}
+
+#sentProcess{
+  color: #73c6b6 ;
+  font-size: 16px;
+}
+
+#receivedProcess{
+  color: #f1948a ;
+  font-size: 16px;
+}
+
+#idValue{
+  color: #2980b9  ;
+}
+
+#showExtraInformation{
+  position: absolute;
+  width:25%;
+  height: 25%;
+  bottom: 0;
+  right:0;
+  text-align: right;
+  align-items: flex-end;
+  overflow-y: auto;
+  margin-bottom: 24px;
+  margin-right: 48px;
+}
+
+.extraInformtaion{
+  padding: 12px;
+  float: right;
+  border-radius: 4px;
+  background-color:  #f7dc6f ;
+}
+
+#header{
+  position: absolute;
+  top:0;
+  width: 100%;
+  text-align: center;
+  left: 0;
+  color: #fff;
+  height: 10%;
+  background-color:  #58d68d     ;
+}
+
+#header h2{
+  margin-left: 16px;
+}
+
+/*#headerInstructions{
   width: 75%;
   top: 1%;
   left: 1%;
   font-size: 16px;
   height: 15%;
-  background-color: #e7e7e7;
+  background-color: #fff;
   padding: 8px;
   border: none;
   overflow: hidden;
   border-radius: 4px;
+  box-shadow: 4px 4px #e7e7e7;
 }
 
 #outputProcessHeading{
@@ -55,19 +244,10 @@ body{
   background-color: #e7e7e7;
   padding: 1%;
   border-radius: 4px;
-}
+}*/
 
 
-#runButton{
-  background-color: #6be35a;
-  border: none;
-  padding-bottom: 8px;
-  padding-top: 8px;
-  padding-left: 16px;
-  padding-right: 16px;
-  float: right;
-  border-radius: 4px;
-}
+
 
 #runButton:focus,
 #runButton:active:focus,
@@ -78,6 +258,7 @@ body{
   outline: none !important
 }
 
+/*
 #controls{
   width:900px;
   padding: 8px;
@@ -88,100 +269,7 @@ body{
   margin-right: 8px;
   background-color: #fff;
 
-}
+}*/
 
 #runButtonArea{
-}
-
-.original{
-  position: absolute;
-  width:75%;
-  height:50%;
-  resize: none;
-  left: 1%;
-  top: 15%;
-  padding: 8px;
-  background-color: #fff;
-  border:none;
-  border-radius: 4px;
-  overflow-y: auto;
-}
-
-#codeEditorDummy{
-  color:black;
-}
-#codeEditor{
-  z-index:11;background:transparent;color:transparent;caret-color: black;
-}
-
-.original span.highlighted {
-    color:#8e44ad;
-}
-
-.original span.ownHighlight{
-  color:  #e67e22;
-}
-
-.original span.varHighlight{
-  color: #16a085;
-}
-
-#codeEditor:focus,
-#codeEditor:active:focus,
-#codeEditor.active:focus,
-#codeEditor.focus,
-#codeEditor:active.focus,
-#codeEditor.active.focus {
-  outline: none !important;
-}
-
-#showInternalProcess{
-  position: absolute;
-  height: 66%;
-  right: 1%;
-  width: 21.25%;
-  background-color: #fff;
-  top: 1%;
-  border-radius: 4px;
-  overflow-y: auto;
-}
-
-p{
-    margin-left: 8px;
-}
-#showExternalProcess{
-  position: absolute;
-  right: 1%;
-  top:69%;
-  width: 21.25%;
-  height: 29%;
-  background-color: #fff;
-  border-radius: 4px;
-  overflow-y: auto;
-
-}
-
-#outputProcess{
-  position: absolute;
-  height: 29%;
-  left: 1%;
-  width: 76%;
-  background-color: #fff;
-  top: 69%;
-  border-radius: 4px;
-  overflow-y: auto;
-}
-
-#sentProcess{
-  color: #73c6b6 ;
-  font-size: 16px;
-}
-
-#receivedProcess{
-  color: #f1948a ;
-  font-size: 16px;
-}
-
-#idValue{
-  color: #2980b9  ;
 }

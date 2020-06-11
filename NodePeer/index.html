@@ -7,7 +7,7 @@
   <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
 <!--  <link rel="stylesheet" href="index.css" type="text/css"> -->
   <link rel="stylesheet" href="distriADK.css" type="text/css">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Tenali+Ramakrishna&family=Ubuntu&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Playfair+Display&family=Tenali+Ramakrishna&family=Ubuntu&family=Raleway&display=swap" rel="stylesheet">
   </head>
   <body>
 <!--    <video autoplay muted loop id="backgroundVideo">
@@ -33,13 +33,18 @@
   </div>-->
 
   <!-- This section is for some heading and instructions -->
-  <div id="headerInstructions">
-    <p style="width:auto;">Start typing your parallel program</p>
-    <button id="runButton">Run</button>
-  </div>
+
 
   <!-- This will be for text area -->
-  <div id="codeEditorArea">
+  <div id="header">
+    <h2>Assisted Distributed Kernel</h2>
+  </div>
+  <button id="runButton">Run</button>
+  <button id="saveButton">Save</button>
+  <div id="codeEditorArea" class="blocks">
+    <div class="heading" id="headerInstructions">
+      <p>Your parallel program</p>
+    </div>
     <div id="codeEditor" class="original" contenteditable="true" autofocus=true ></div>
     <div id="codeEditorDummy" class="original"></div>
   </div>
@@ -49,24 +54,27 @@
   </div>-->
 
   <!-- This will be for  section showing where all the processes are being executed -->
-  <div id="showInternalProcess">
-    <div id="internalProcessHeading">
+  <div id="showInternalProcess" class="blocks">
+    <div class="heading">
       <p>Your process </p>
     </div>
   </div>
 
   <!-- This will be for the bottom section for output -->
-  <div id="outputProcess">
-    <div id="outputProcessHeading">
-      <p>Output</p>
+  <div id="outputProcess" class="blocks">
+    <div class="heading">
+      <p>Your Output</p>
     </div>
   </div>
 
   <!-- This section is for showing which and all processes from other computers are being executed here -->
-  <div id="showExternalProcess">
-    <div id="externalProcessHeading">
+  <div id="showExternalProcess" class="blocks">
+    <div class="heading">
       <p>Your processor </p>
     </div>
+  </div>
+
+  <div id="showExtraInformation">
   </div>
 
   <script> window.$ = window.jQuery = require('./jquery.min.js');</script>

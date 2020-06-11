@@ -12,7 +12,7 @@ const wrtc = require('wrtc');
 var baseUrl = 'https://adk-signallingserver.herokuapp.com';
 
 var { executeCode,setReceivedData,setRankList,setRootProcessId } = require('./distri-core.js');
-var { setIdThere } = require('./handleUi.js');
+var { setIdThere,connectedToNode } = require('./handleUi.js');
 
 
 function makePeerObject(initiator){
@@ -177,11 +177,6 @@ console.log('Sending token to backend');
 
 function newOfferNodeHandler(){
 
-  //This function is used to generate new offerNodes and will be called when this node is connected to something else
-
-//  console.log('There are no nodes on the network');
-  //console.log('I will genrate my offerToken and send it to SS to keep track');
-
   //Makes a new offerType node
   peer = makePeerObject(true);
 
@@ -201,14 +196,8 @@ function newOfferNodeHandler(){
       registrationToken:myRegistraionToken,
       //this node's offerToken that is sent to SS to spread it
       offerToken:myCurrentValidOfferToken,
-      //this is a flag value that changes based on the validity of the offerToken
-      //isOfferTokenValid:true,(removed for now)
       //Amount of openConnections this node has
       openConnections:openConnections,
-      //Number of closedDirectly connected nodes that this node has
-      //closedDirect:closedDirect,(removed for now)
-      //List containing id of all the directly connected nodes that are closed
-      //closedDirectId:closedDirectId(removed for now)
     };
 
     //send this data to server
@@ -272,8 +261,8 @@ function sendOpenConections(peer){
 }
 
 //This does necessary communication with the other nodes to set up the proper data for
-//InterconnectedRings Architecture
-//Called only when a new node is connected to this node
+
+//InterconnectedRings Architecture - Called only when a new node is connected to this node
 function doNecessary(type,incomingId,incomingRegistrationToken,incomingOpenConnections){
 
   //Increment openConnections to indicate that one slot is closed
@@ -292,22 +281,19 @@ function doNecessary(type,incomingId,incomingRegistrationToken,incomingOpenConne
   directPeersOpenConnections[openConnections] = incomingOpenConnections;
 
   console.log('This is incomingOpenConnections',incomingOpenConnections);
-
   console.log('This is directId list '+directId);
   console.log('This is directPeerObjectList '+directPeerObjectList);
   console.log('This is the directPeersOpenConnections ',directPeersOpenConnections);
-
 
   //send this data to all the directly connected peers
   if(type == 'offer'){
       sendStateToPeer(peer);
   }
-
     directPeerObjectList.forEach((peer, i) => {
       sendOpenConections(peer);
     });
 
-
+    connectedToNode(incomingId);
 }
 
 
@@ -361,12 +347,9 @@ ipcRenderer.on(NOTIFICATION_RECEIVED, (_, serverNotificationPayload) => {
           id:myId,
           //Generated answerToken for that offerNode
           answerToken:answerToken,
-          //How many closedConnections direct peers are present for this
-          //closedDirect:closedDirect,(removed for now)
-          //List of closedConnections directPeers id
-          //closedDirectId:closedDirectId,(removed for now)
           //This node's registration token
           registrationToken:myRegistraionToken,
+          //number of openConnections
           openConnections:openConnections,
           //Selected node's registration tokenitem
           selectedRegistrationToken:selectedNode.registrationToken
@@ -486,8 +469,6 @@ if(type == '4'){
     };
   });
 
-  console.log('If I had to send this message, I would send it to '+directPeerObjectList[index]);
-
 
   //Get the list of all directly connected peers from the node that sent the message
   var incomingDirectPeersId = data.directId;
@@ -512,8 +493,6 @@ if(type == '4'){
 
           //Here I will ask this node to connect me to that node
 
-          console.log('I will ask the node with id '+mainId+' to connect me with '+nodeId);
-          console.log('On my directly connected peers list, the node is on this index '+index);
           peer = makePeerObject(true);
           peer.on('signal',(offerToken)=>{
             //Got the offerToken here to connect with other node,
@@ -523,14 +502,10 @@ if(type == '4'){
               nodeId:nodeId,
               offerToken:offerToken,
             };
-
             directPeerObjectList[index].send(JSON.stringify(extendConnectionMessage));
-
-          })
-
+          });
         }
       }
-
     });
 
   }

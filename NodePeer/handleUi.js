@@ -1,9 +1,9 @@
 function addReceivedProcess(rootProcessId){
-  $('#showExternalProcess').append("<p id='receivedProcess'> Got this process from "+rootProcessId+"</p>");
+  $('#showExternalProcess').append("<p id='receivedProcess' class='writtenStuffInside'> Executing a process received from "+rootProcessId+"</p>");
 }
 
 function addSentProcess(id){
-  $('#showInternalProcess').append("<p id='sentProcess'> Sent this process to "+id+"</p>");
+  $('#showInternalProcess').append("<p id='sentProcess'class='writtenStuffInside'> Sent this process to "+id+"</p>");
 }
 
 function print(something){
@@ -13,11 +13,15 @@ function print(something){
   }else{
     finalOutput = something;
   }
-  $('#outputProcess').append("<p id='actualOutput'>"+finalOutput+"</p");
+  $('#outputProcess').append("<p id='actualOutput' class='writtenStuffInside'>"+finalOutput+"</p");
 }
 
 function setIdThere(id){
   $('#headerInstructions').append("<p id='idValue'>My id is "+id+"</p>");
 }
 
-module.exports = { addReceivedProcess,addSentProcess,print,setIdThere }
+function connectedToNode(id){
+  $('#showExtraInformation').append("<p class='extraInformtaion'> Connected to "+id+"</p>");
+}
+
+module.exports = { addReceivedProcess,addSentProcess,print,setIdThere,connectedToNode }
