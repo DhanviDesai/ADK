@@ -309,12 +309,12 @@ function doNecessary(type,incomingId,incomingRegistrationToken,incomingOpenConne
 
   //send this data to all the directly connected peers
   if(type == 'offer'){
-      sendStateToPeer(peer);
+//      sendStateToPeer(peer);
   }
 
   directId.forEach((id, i) => {
     getThePeer(id,(peer) => {
-      sendOpenConections(peer);
+    //  sendOpenConections(peer);
     });
   });
 
