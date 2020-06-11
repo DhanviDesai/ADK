@@ -177,6 +177,7 @@ console.log('Sending token to backend');
 
 });
 
+
 function newOfferNodeHandler(){
 
   if(openConnections < 2){
@@ -213,6 +214,16 @@ function newOfferNodeHandler(){
 
     });
 
+  }
+}
+
+function checkNewOfferNodeHandler(){
+  if(isConnected){
+    newOfferNodeHandler();
+  }else{
+    setTimeout(() => {
+      checkNewOfferNodeHandler();
+    },200);
   }
 }
 
@@ -558,7 +569,7 @@ if(type == '4'){
       getThePeer(mainId,(sendingPeer) => {
         sendingPeer.send(JSON.stringify(message));
       })
-      newOfferNodeHandler();
+      checkNewOfferNodeHandler();
     }
 
   }
@@ -680,7 +691,7 @@ else if(type == '15'){
 }
 
 else if(type == 'noNeed'){
-  newOfferNodeHandler();
+  checkNewOfferNodeHandler();
 }
 
 
