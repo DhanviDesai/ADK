@@ -9,6 +9,7 @@ $('#runButton').on('click',(e)=>{
   send({to:'all',data:code});
   require('./temp1.js');
   delete require.cache[require.resolve('./temp1.js')];
+  childProcess.exec('rm temp1.js');
 
 });
 

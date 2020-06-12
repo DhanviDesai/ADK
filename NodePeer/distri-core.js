@@ -123,6 +123,7 @@ function executeCode(code){
     childProcess.exec('echo "'+code+'" > temp1.js');
     require('./temp1.js');
     delete require.cache[require.resolve('./temp1.js')];
+    childProcess.exec('rm temp1.js');
   }else{
     setTimeout(() => {
       executeCode(code);
