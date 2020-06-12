@@ -74,10 +74,13 @@
     </div>
   </div>
 
+  <canvas id="myChart"></canvas>
+
   <div id="showExtraInformation">
   </div>
 
   <script> window.$ = window.jQuery = require('./jquery.min.js');</script>
+  <script>var Chart = require('./Chart.bundle.min.js')</script>
   <script>
       var childProcess = require('child_process');
       var { getDirectPeerObjectList,getDirectPeerId,getMyId} = require('./interingsarch-client.js');
@@ -85,5 +88,6 @@
       var { addReceivedProcess,addSentProcess,print } = require('./handleUi.js');
     </script>
     <script src="codeEditADK.js"></script>
+    <script>require('./DrawChart.js')</script>
   </body>
 </html>

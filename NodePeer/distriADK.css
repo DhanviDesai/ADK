@@ -85,7 +85,7 @@ font-family: 'Montserrat';
   width: 25%;
   left: 0;
   margin-bottom: 24px;
-  margin-left: 6%;
+  margin-left: 5%;
   background-color: #fff;
   bottom:0;
   border-radius: 4px;
@@ -99,7 +99,7 @@ font-family: 'Montserrat';
   margin-bottom: 24px;
   width: 22%;
   height: 30%;
-  margin-right: 40%;
+  margin-right: 45%;
   margin-left: 48px;
   background-color: #fff;
   border-radius: 4px;
@@ -119,6 +119,14 @@ font-family: 'Montserrat';
   margin-top: 7%;
   border-radius: 4px;
   overflow-y: auto;
+}
+
+#myChart{
+  max-width:400px;
+  max-height:400px;
+  position: absolute;
+  bottom: 24px;
+  right: 18%;
 }
 
 
