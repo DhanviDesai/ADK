@@ -138,12 +138,12 @@ var receivedDataList = [];
 
 function setReceivedData(data){
   console.log('Got this data',data);
-  if(typeof data == 'number'){
+  if(data.type == 'Buffer'){
+    console.log('So i put it here in buffer');
+    receivedDataList.push(data.data);
+  }else{
     console.log('So i put it here in number');
     receivedDataList.push(data);
-  }else{
-    console.log('So i put it here in buffer');
-    receivedDataList.push(Array.prototype.slice.call(data,0));
   }
 }
 
