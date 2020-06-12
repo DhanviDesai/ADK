@@ -50,60 +50,70 @@ function setRootProcessId(id){
 function send(obj){
   var peerList = getDirectPeerObjectList();
   var idList = getDirectPeerId();
-  //send the code to all the peers
-  if(obj.to == 'all'){
-    var codeData = {
-      type: '11',
-      data:obj.data
-    };
-    console.log(codeData);
-    peerList.forEach((peer, i) => {
-      peer.send(JSON.stringify(codeData));
-    });
-  }
-  else if(obj.to == 'allRank'){
-    var rankData = {
-      type:'13',
-      data:obj.data
-    };
-    peerList.forEach((peer, i) => {
-      peer.send(JSON.stringify(rankData));
-    });
-  }
-  else if(obj.to == 'allId'){
-    var idData = {
-      type:'15',
-      data:obj.data
-    };
-    peerList.forEach((peer,i)=>{
-      peer.send(JSON.stringify(idData));
-    });
-  }
-  //send the data intended to send by the programmer
-  else{
-    var index;
-    if(obj.to == 0){
-      idList.forEach((node, i) => {
-        if(node == rootProcessId ){
-          index = i;
-        }
+  if(peerList.length > 0 ){
+    //send the code to all the peers
+    if(obj.to == 'all'){
+      var codeData = {
+        type: '11',
+        data:obj.data
+      };
+      console.log(codeData);
+      peerList.forEach((peer, i) => {
+        peer.send(JSON.stringify(codeData));
       });
+    }
+    else if(obj.to == 'allRank'){
+      var rankData = {
+        type:'13',
+        data:obj.data
+      };
+      peerList.forEach((peer, i) => {
+        peer.send(JSON.stringify(rankData));
+      });
+    }
+    else if(obj.to == 'allId'){
+      var idData = {
+        type:'15',
+        data:obj.data
+      };
+      peerList.forEach((peer,i)=>{
+        peer.send(JSON.stringify(idData));
+      });
+    }
+    //send the data intended to send by the programmer
+    else{
+      var index;
+      if(obj.to == 0){
+        idList.forEach((node, i) => {
+          if(node == rootProcessId ){
+            index = i;
+          }
+        });
 
-    }else{
-      index = obj.to - 1;
+      }else{
+        index = obj.to - 1;
+      }
+      var sendingData;
+      if(typeof obj.data == 'number'){
+        sendingData = {
+          type:'12',
+          data:obj.data
+        };
+      }else{
+        sendingData = {
+          type:'12',
+          data:Buffer.from(obj.data)
+        }
+      }
+      console.log(sendingData);
+      console.log('I am sending this data to other peer');
+      if(myRank == 0){
+        addSentProcess(idList[index]);
+      }
+      var peer = peerList[index];
+      console.log(peer);
+      peer.send(JSON.stringify(sendingData));
     }
-    var sendingData = {
-      type:'12',
-      data:obj.data
-    };
-    console.log(sendingData);
-    console.log('I am sending this data to other peer');
-    if(myRank == 0){
-      addSentProcess(idList[index]);
-    }
-    var peer = peerList[index];
-    console.log(peer);
-    peer.send(JSON.stringify(sendingData));
   }
 }
 
@@ -127,7 +137,14 @@ var isDataReceived = false;
 var receivedDataList = [];
 
 function setReceivedData(data){
-  receivedDataList.push(data);
+  console.log('Got this data',data);
+  if(typeof data == 'number'){
+    console.log('So i put it here in number');
+    receivedDataList.push(data);
+  }else{
+    console.log('So i put it here in buffer');
+    receivedDataList.push(Array.prototype.slice.call(data,0));
+  }
 }
 
 
@@ -153,23 +170,25 @@ function innerWorking(obj,callback){
 
 function recv(obj,callback){
 ///  console.log('This is receivedDataList '+receivedDataList)
-  if(obj.from !='all'){
-    if(receivedDataList.length > 0){
-      callback(receivedDataList.shift());
-    }else{
-      setTimeout(() => {
-        recv(obj,callback);
-      },300);
+if(peerList.length > 0 ){
+    if(obj.from !='all'){
+      if(receivedDataList.length > 0){
+        callback(receivedDataList.shift());
+      }else{
+        setTimeout(() => {
+          recv(obj,callback);
+        },300);
+      }
     }
-  }
-  else{
-    if(receivedDataList.length == peerList.length){
-      callback(receivedDataList);
-      receivedDataList=[];
-    }else{
-      setTimeout(() => {
-        recv(obj,callback);
-      },300);
+    else{
+      if(receivedDataList.length == peerList.length){
+        callback(receivedDataList);
+        receivedDataList=[];
+      }else{
+        setTimeout(() => {
+          recv(obj,callback);
+        },300);
+      }
     }
   }
 }
