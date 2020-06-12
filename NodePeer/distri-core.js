@@ -165,6 +165,7 @@ function recv(obj,callback){
   else{
     if(receivedDataList.length == peerList.length){
       callback(receivedDataList);
+      receivedDataList=[];
     }else{
       setTimeout(() => {
         recv(obj,callback);
