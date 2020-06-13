@@ -13,6 +13,7 @@ var baseUrl = 'https://adk-signallingserver.herokuapp.com';
 
 var { executeCode,setReceivedData,setRankList,setRootProcessId } = require('./distri-core.js');
 var { setIdThere,connectedToNode } = require('./handleUi.js');
+var { setResourcesValues } = require('./handleIncomingResources.js');
 
 
 function makePeerObject(initiator){
@@ -707,7 +708,8 @@ else if(type == 'noNeed'){
 }
 
 else if(type == 'Resources'){
-  console.log('data');
+  console.log('Got resurces data',data.data);
+  setResourcesValues(data.id,data.data);
 }
 
 

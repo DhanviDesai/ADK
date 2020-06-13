@@ -60,10 +60,13 @@ function drawChart(){
   },1000);
 }
 
+var myId = getMyId();
+
 function sendItToAll(){
   var peerList = getDirectPeerObjectList();
   var data = {
     type:'Resources',
+    id:myId,
     data:dataList
   }
   peerList.forEach((peer, i) => {
