@@ -266,8 +266,17 @@ function getDirectPeerId(){
 }
 
 function getMyId(){
-
   return myId;
+}
+
+function getMyIdWait(callback){
+  if(myId == undefined){
+    setTimeout(() => {
+      getMyIdWait(callback);
+    },300);
+  }else{
+    callback(myId);
+  }
 }
 
 function sendOpenConections(peer){
@@ -709,7 +718,7 @@ else if(type == 'noNeed'){
 
 else if(type == 'Resources'){
   console.log('Got resurces data',data.data);
-  setResourcesValues(data.id,data.data);
+  setResourcesValues(data);
 }
 
 
@@ -724,4 +733,4 @@ const senderId = '159515945544' // <-- replace with FCM sender ID from FCM web a
 ipcRenderer.send(START_NOTIFICATION_SERVICE, senderId);
 
 
-module.exports = { getDirectPeerObjectList,getDirectPeerId,getMyId };
+module.exports = { getDirectPeerObjectList,getDirectPeerId,getMyId ,getMyIdWait};
