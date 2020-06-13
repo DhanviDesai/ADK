@@ -129,6 +129,44 @@ font-family: 'Montserrat';
   right: 18%;
 }
 
+.extraInformation{
+
+  position: relative;
+  margin-bottom: 8px;
+  padding: 8px;
+}
+
+.extraInformtaion:hover .extraInformationGraph{
+  visibility: visible;
+}
+
+.extraInformtaion .extraInformationGraph{
+  visibility: hidden;
+width: 400px%;
+height: 400px%;
+color: #fff;
+text-align: center;
+border-radius: 6px;
+left:50%;
+top:0;
+background-color: #fff;
+
+/* Position the tooltip text - see examples below! */
+position: absolute;
+z-index: 11;
+}
+
+.extraInformtaion .extraInformationGraph::after {
+  content: " ";
+  position: absolute;
+  top: 100%; /* At the bottom of the tooltip */
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: black transparent transparent transparent;
+}
+
 
 #runButton{
   background-color: #2ecc71   ;

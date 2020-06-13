@@ -1,5 +1,12 @@
-//var childProcess = require('child_process');
-var ctx = document.getElementById("myChart").getContext('2d');
+//var data = []
+var childProcess = require('child_process');
+var ctx =   document.getElementById('extraGraph').getContext('2d');
+
+var chartObjects = [];
+
+//whenever a new node connects, I will create a new chartObject and push it in an Array
+
+//Depending on the id of the node that I am getting the data, I will draw and update the chart
 
 function handleUpdate(chart,label,data){
   chart.data.datasets.forEach((dataset, i) => {
@@ -14,7 +21,7 @@ function handleUpdate(chart,label,data){
   });
   chart.update(0);
 }
-var myDoughnutChart;
+
 function firstChart(){
   myDoughnutChart = new Chart(ctx,{
     type:'doughnut',
@@ -33,13 +40,16 @@ function firstChart(){
         'cache'
       ]
     },
+    options:{
+      legend:{
+        display:false
+      }
+    }
   });
   setTimeout(() => {
     drawChart();
   },820);
 }
-
-var dataList = [];
 
 function drawChart(){
   var cp1 = childProcess.exec("vmstat | sed -n '3p' | awk '{print $4,$5,$6}'",(err,stdout,stderr) => {
@@ -49,7 +59,7 @@ function drawChart(){
     var buff = parseInt(resources[1]);
     var cache = parseInt(resources[2]);
     var labels = ['free','buff','cache'];
-    dataList = [];
+    var dataList = [];
     dataList.push(free);
     dataList.push(buff);
     dataList.push(cache);
@@ -60,22 +70,5 @@ function drawChart(){
   },1000);
 }
 
-function sendItToAll(){
-  var peerList = getDirectPeerObjectList();
-  var data = {
-    type:'Resources',
-    data:dataList
-  }
-  peerList.forEach((peer, i) => {
-    peer.send(JSON.stringify(data));
-  });
-
-
-  setTimeout(() => {
-    sendItToAll();
-  },3000);
-
-}
 
 firstChart();
-sendItToAll();

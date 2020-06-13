@@ -706,6 +706,10 @@ else if(type == 'noNeed'){
   checkNewOfferNodeHandler();
 }
 
+else if(type == 'Resources'){
+  console.log('data');
+}
+
 
 
 
