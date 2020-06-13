@@ -21,7 +21,7 @@ function setIdThere(id){
 }
 
 function connectedToNode(id){
-  $('#showExtraInformation').append("<div class='extraInformtaion'> Connected to "+id+"<canvas class='extraInformationGraph' id='extraGraph'></canvas></div>");
+  $('#showExtraInformation').append("<p class='extraInformtaion' id='"+id+"'> Connected to "+id+"</p>");
 }
 
 module.exports = { addReceivedProcess,addSentProcess,print,setIdThere,connectedToNode }
