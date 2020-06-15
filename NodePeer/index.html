@@ -77,16 +77,17 @@
   <canvas id="myChart"></canvas>
 
   <div id="showExtraInformation">
+    <p class="extraInformtaion">Connected to 123456 <span class="resourceInformation"> <br>free: 1021072<br>buff: 104432<br>cache: 1992976</span></p>
   </div>
 
   <script> window.$ = window.jQuery = require('./jquery.min.js');</script>
   <script>var Chart = require('./Chart.bundle.min.js')</script>
-  <script>
+<!--  <script>
       var childProcess = require('child_process');
       var { getDirectPeerObjectList,getDirectPeerId,getMyId,getMyIdWait} = require('./interingsarch-client.js');
       var { send,recv,size,rank } = require('./distri-core.js');
       var { addReceivedProcess,addSentProcess,print } = require('./handleUi.js');
-    </script>
+    </script>-->
     <script src="codeEditADK.js"></script>
     <script>require('./DrawChart.js')</script>
   <!--  <script>require('./ExternalChart.js')</script>-->

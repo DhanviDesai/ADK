@@ -1,4 +1,4 @@
-//var childProcess = require('child_process');
+var childProcess = require('child_process');
 var ctx = document.getElementById("myChart").getContext('2d');
 
 function handleUpdate(chart,label,data){
@@ -57,7 +57,7 @@ function drawChart(){
   });
   setTimeout(() => {
     drawChart();
-  },1000);
+  },3000);
 }
 
 

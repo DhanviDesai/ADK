@@ -136,6 +136,10 @@ font-family: 'Montserrat';
   padding: 8px;
 }
 
+.resourceInformation{
+  font-size: 14px;
+}
+
 .extraInformtaion:hover .extraInformationGraph{
   visibility: visible;
 }
@@ -238,7 +242,8 @@ z-index: 11;
   left: 0;
   color: #fff;
   height: 10%;
-  background-color:  #58d68d ;
+  background-color:#17202a;
+  box-shadow: 4px 4px #e7e7e7;
 }
 
 #header h2{
