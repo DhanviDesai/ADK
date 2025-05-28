@@ -1,5 +1,3 @@
-
-
 var rankList = [];
 
 var myRank;
@@ -53,14 +51,15 @@ function send(obj){
   if(peerList.length > 0 ){
     //send the code to all the peers
     if(obj.to == 'all'){
-      var codeData = {
-        type: '11',
-        data:obj.data
-      };
-      console.log(codeData);
-      peerList.forEach((peer, i) => {
-        peer.send(JSON.stringify(codeData));
-      });
+      //var codeData = {
+      //  type: '11',
+      //  data:obj.data
+      //};
+      //console.log(codeData);
+      //peerList.forEach((peer, i) => {
+      //  peer.send(JSON.stringify(codeData));
+      //});
+      console.warn("Sending code for remote execution (type: '11') is disabled.");
     }
     else if(obj.to == 'allRank'){
       var rankData = {
@@ -120,10 +119,11 @@ function send(obj){
 function executeCode(code){
   if(rootProcessId != undefined){
     addReceivedProcess(rootProcessId);
-    childProcess.exec('echo "'+code+'" > temp1.js');
-    require('./temp1.js');
-    delete require.cache[require.resolve('./temp1.js')];
-    childProcess.exec('rm temp1.js');
+    //childProcess.exec('echo "'+code+'" > temp1.js');
+    //require('./temp1.js');
+    //delete require.cache[require.resolve('./temp1.js')];
+    //childProcess.exec('rm temp1.js');
+    console.warn('Remote code execution feature is disabled. Received code:', code);
   }else{
     setTimeout(() => {
       executeCode(code);
